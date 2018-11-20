@@ -1,0 +1,4 @@
+class JugadorManual extends Jugador{
+
+    
+}
