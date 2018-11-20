@@ -1,14 +1,12 @@
 class Jugador{
 
-    constructor(nombre,Barco){
+    constructor(nombre){
         this.nombre=nombre;
-        this.Barcos.push(Barco);
+        this.arrayBarcos = new Array(4);
     }
 
 
-    insertarBarco(Barco);
-
-    eliminarBarco(Barco);
+    agregarBarco(barco);
 
     atacar(x,y);
 
