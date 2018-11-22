@@ -6,36 +6,45 @@ class Tablero{
         this.casillas =new Array(this.x);
         for(var i = 0; i<this.x;i++){
             this.casillas[i] = new Array(this.y);
-            for(var j = 0; z<this.casillas[i].length;z++){
+            for(var j = 0; j<this.casillas[i].length;j++){
                 this.casillas[i][j]= "agua";
             }
         }
 
     }
 
-  /*  crearTablero() {
-        
-        var tablero = new Array(this.x);
-       
-        for(var i = 0; i<tablero.length;i++){
-            tablero[i] = new Array(this.y);
-            for(var z = 0; z<tablero[i].length;z++){
-                tablero[i][z] = "agua";
-            }
-        }
-        
-
-        return tablero;
-    }*/
-
+    //EN PROCESO
     //mejorar para que compruebe todas las casillas que va a ocupar el barco
-    comprobarPosicion(fila,columna){
-        if(this.casillas[fila][columna]=="agua"){
-            console.log("agua");
-            return true;
+    comprobarPosicion(barco){
+        var bandera=true; //bandera que nos avisa si una casilla que va a ocupar el barco no es ocupable
+        if(barco.orientacion="vertical"){
+            //copio la Y del barco para no modificar el objeto al ir descendiendo por el tablero
+            var inicio_vertical=barco.y;
+            for(let i=0;i<barco.longitud;i++ , inicio_vertical++){
+                //compruebo que no me salga por abajo
+                if(barco.x<this.x&&barco.y<this.y){
+                    if(this.casillas[barco.x][inicio_vertical]=="agua"){
+                        bandera=true;
+                    }else{
+                        console.log("la bandera esta false");
+                        bandera=false;
+                        break;
+                    }
+                }else{
+                    console.log("la bandera esta false");
+                    bandera=false;
+                    break;
+                }
+            }
+            if(bandera==false){
+                console.log("la bandera acaba en false");
+            }else{
+                console.log("la bandera acaba en true");
+            }
+            
         }else{
-            console.log("no agua");
-            return false;
+            //falta por implementar la comprobacion en caso de que queramos insertar el barco horizontalmente
+
         }
 
     }

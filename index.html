@@ -14,9 +14,12 @@
     
     var tablero= new Tablero(10,10);
     /*tablero.crearTablero();*/
-    tablero.comprobarPosicion(3,4);
     
     var mibarco = new Barco(4);
+    mibarco.establecer_orientacion="vertical";
+    mibarco.posicionInicialX=3;
+    mibarco.posicionInicialY=4;
+    tablero.comprobarPosicion(mibarco);
     tablero.colocarBarco(mibarco,3,4,"horizontal");
    
 

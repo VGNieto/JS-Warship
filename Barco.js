@@ -2,12 +2,13 @@ class Barco{
 
     //constructor con solo longitud por si creamos el barco y a la hora de insertarlo usamos los setters
     constructor(longitud){
+        
         this.longitud=longitud;
     }
 
     //establecer orientacion del barco vertical (V) horizontal (H)
-    set orientacion(orientacion){
-        this.orientacion=orientacion;
+    set establecer_orientacion(orientacion_entrada){
+        this.orientacion=orientacion_entrada;
     }
 
     //establecer cabecera del barco
