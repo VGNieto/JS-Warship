@@ -13,79 +13,82 @@ class Tablero{
 
     }
 
-    //EN PROCESO
-    //mejorar para que compruebe todas las casillas que va a ocupar el barco
+    //OK
     comprobarInsercion(barco){
         var bandera=true; //bandera que nos avisa si una casilla que va a ocupar el barco no es ocupable
-        if(barco.orientacion=="vertical"){
+        if(barco.orientacion=="horizontal"){
             //copio la Y del barco para no modificar el objeto al ir descendiendo por el tablero
             var inicio_vertical=barco.y;
             for(let i=0;i<barco.longitud;i++ , inicio_vertical++){
                 //compruebo que no me salga por abajo
-                if(barco.x<this.x&&barco.y<this.y){
+                if(barco.x<=this.x&&barco.y+barco.longitud<=this.y){
                     if(this.casillas[barco.x][inicio_vertical]=="agua"){
                         bandera=true;
                     }else{
-                        console.log("la casilla ya esta ocupada");
-                        bandera=false;
-                        break;
+                        console.log("la casilla ya esta ocupada");;
+                        return false;
                     }
                 }else{
                     console.log("me salgo del tablero");
-                    bandera=false;
-                    break;
+                    return false;
                 }
             }
             if(bandera==false){
                 console.log("no se puede insertar");
+                return false;
             }else{
                 console.log("se puede insertar");
+                return true;
             }
             
         }else{
             //copio la X del barco para no modificar el objeto al ir descendiendo por el tablero
             var inicio_horizontal=barco.x;
-            for(let i=0;i<barco.longitud;i++ , inicio_vertical++){
+            for(let i=0;i<barco.longitud;i++ , inicio_horizontal++){
                 //compruebo que no me salga por abajo
-                if(barco.x<this.x&&barco.y<this.y){
-                    if(this.casillas[barco.x][inicio_vertical]=="agua"){
+                if(barco.x+barco.longitud<=this.x&&barco.y<=this.y){
+                    if(this.casillas[inicio_horizontal][barco.y]=="agua"){
                         bandera=true;
                     }else{
                         console.log("la casilla esta ocupada");
-                        bandera=false;
-                        break;
+                        return false;
                     }
                 }else{
                     console.log("me salgo del tablero");
-                    bandera=false;
-                    break;
+                    return false;
                 }
             }
             if(bandera==false){
                 console.log("no se puede insertar");
+                return false;
             }else{
                 console.log("la bandera acaba en true");
+                return true;
             }
 
         }
 
     }
 
-    colocarBarco(barco,x,y,orientacion){
+
+
+    colocarBarco(barco){
         
-
-        barco.posicionInicialX = x;
-        barco.posicionInicialY = y;
-
-        if(this.comprobarPosicion(barco.posicionInicialX,barco.posicionInicialY)==true){
-            
-            //comprobar que no se sale el barco del tablero teniendo en cuenta la orientacion
-            //comprobar por todas las posiciones que va a ocupar el barco
-
+        if(this.comprobarInsercion(barco)==true){
+           if (barco.orientacion=="vertical"){
+                for(var i = barco.x, contador=0; contador<barco.longitud;i++, contador++){
+                    this.casillas[i][barco.y]="barco";
+                }
+           }else{//colorcar barco horizontal
+                for(var j = barco.y, contador=0; contador<barco.longitud;j++, contador++){
+                    this.casillas[barco.x][j]="barco";
+                }
+           }
         }
         
-        console.log(barco.x+""+barco.y+""+barco.orientacion);
-        console.log(tablero);
+        console.log(this.casillas);
+        
+        
 
 
 

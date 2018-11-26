@@ -16,11 +16,17 @@
     /*tablero.crearTablero();*/
     
     var mibarco = new Barco(4);
-    mibarco.establecer_orientacion="vertical";
+    mibarco.establecer_orientacion="horizontal";
     mibarco.posicionInicialX=3;
-    mibarco.posicionInicialY=9;
+    mibarco.posicionInicialY=6;
     tablero.comprobarInsercion(mibarco);
-    tablero.colocarBarco(mibarco,3,9,"horizontal");
+    tablero.colocarBarco(mibarco);
+    var barco2 = new Barco(4);
+    barco2.establecer_orientacion="vertical";
+    barco2.posicionInicialX=3;
+    barco2.posicionInicialY=6;
+    tablero.comprobarInsercion(mibarco);
+    tablero.colocarBarco(mibarco);
    
 
 
