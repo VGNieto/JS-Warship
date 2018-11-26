@@ -15,9 +15,9 @@ class Tablero{
 
     //EN PROCESO
     //mejorar para que compruebe todas las casillas que va a ocupar el barco
-    comprobarPosicion(barco){
+    comprobarInsercion(barco){
         var bandera=true; //bandera que nos avisa si una casilla que va a ocupar el barco no es ocupable
-        if(barco.orientacion="vertical"){
+        if(barco.orientacion=="vertical"){
             //copio la Y del barco para no modificar el objeto al ir descendiendo por el tablero
             var inicio_vertical=barco.y;
             for(let i=0;i<barco.longitud;i++ , inicio_vertical++){
@@ -26,24 +26,46 @@ class Tablero{
                     if(this.casillas[barco.x][inicio_vertical]=="agua"){
                         bandera=true;
                     }else{
-                        console.log("la bandera esta false");
+                        console.log("la casilla ya esta ocupada");
                         bandera=false;
                         break;
                     }
                 }else{
-                    console.log("la bandera esta false");
+                    console.log("me salgo del tablero");
                     bandera=false;
                     break;
                 }
             }
             if(bandera==false){
-                console.log("la bandera acaba en false");
+                console.log("no se puede insertar");
             }else{
-                console.log("la bandera acaba en true");
+                console.log("se puede insertar");
             }
             
         }else{
-            //falta por implementar la comprobacion en caso de que queramos insertar el barco horizontalmente
+            //copio la X del barco para no modificar el objeto al ir descendiendo por el tablero
+            var inicio_horizontal=barco.x;
+            for(let i=0;i<barco.longitud;i++ , inicio_vertical++){
+                //compruebo que no me salga por abajo
+                if(barco.x<this.x&&barco.y<this.y){
+                    if(this.casillas[barco.x][inicio_vertical]=="agua"){
+                        bandera=true;
+                    }else{
+                        console.log("la casilla esta ocupada");
+                        bandera=false;
+                        break;
+                    }
+                }else{
+                    console.log("me salgo del tablero");
+                    bandera=false;
+                    break;
+                }
+            }
+            if(bandera==false){
+                console.log("no se puede insertar");
+            }else{
+                console.log("la bandera acaba en true");
+            }
 
         }
 
