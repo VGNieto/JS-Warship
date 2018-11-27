@@ -4,6 +4,7 @@ class Tablero {
     this.x = x;
     this.y = y;
     this.casillas = new Array(this.x);
+    this.barcos = new Array(new Barco(4),new Barco(3));
     this.tablero = document.getElementById("juego"); //Cogemos la tabla del html
     for (var i = 0; i < this.x; i++) {
       this.casillas[i] = new Array(this.y);
@@ -11,23 +12,28 @@ class Tablero {
         this.casillas[i][j] = "agua";
       }
     }
-    this.pintarTablero();
+    
   }
 
   //Edita la casilla que clickemos y dependiendo el resultado pondrá una cosa u otra.
-  editarCasilla() {
-    if (this.textContent === "barco") {
-      console.log("Aquí hay un barco amigo, buen trabajo");
-    } else {
-      this.textContent = "X"; //Lo que se pondrá.
-      self.casillas[Math.floor(this.id / self.x)][this.id % self.y] = "X"; //Guardamos en el array la modificacion.
+  agregarBarcoAlTablero() {
+    
+    
+    for(let i = 0; i<self.barcos.length;i++){
+        console.log(self.barcos[i].orientacion);
+        self.barcos[i].posicionInicialX = parseInt(this.id / self.x);
+        self.barcos[i].posicionInicialY = parseInt(this.id % self.y);
+        self.colocarBarco(self.barcos[i]);
+        
     }
+
     console.log(self.casillas);
-    return true;
+   
   }
 
+  
   //Pinta el tablero y se modifica cada vez que clickemos una posición.
-  pintarTablero() {
+  pintarBarcos() {
     //Para cada posicion del array del tablero, creamos la tabla.
     var contadorPosiciones = 0;
     for (let i = 0; i < this.x; i++) {
@@ -37,8 +43,8 @@ class Tablero {
         fila.appendChild(dato);
         dato.className = "datos";
         dato.id = contadorPosiciones;
-        dato.textContent = this.casillas[i][j];
-        dato.addEventListener("click", this.editarCasilla);
+        dato.innerHTML = "<img src=\"agua.png\" width=30px; height=30px; />";
+        dato.addEventListener("click", this.agregarBarcoAlTablero);
         contadorPosiciones++;
       }
       this.tablero.appendChild(fila);
@@ -53,16 +59,32 @@ class Tablero {
       for (let j = 0; j < this.y; j++) {
         var celda = fila[i].getElementsByTagName("td");
         if (self.casillas[i][j] == "barco") {
-          celda[j].textContent = "barco";
-        } //Continuará
+          celda[j].innerHTML = "<img src=\"barco.png\" width=30px; height=30px; />";
+        } else if(self.casillas[i][j] == "atacado"){
+            celda[j].addEventListener("click", function nada(){console.log("ya has atacado")});
+        }
       }
     }
     console.log(self.casillas);
 
   }
 
-  //OK
+
   comprobarInsercion(barco) {
+
+    if(typeof barco =="undefined"){
+        
+        console.log("barco erroneo");
+        return false;
+    }
+
+    if(typeof barco.orientacion =="undefined"){
+        alert("@tonto");
+        return false;
+
+      }
+    
+
     var bandera = true; //bandera que nos avisa si una casilla que va a ocupar el barco no es ocupable
     if (barco.orientacion == "horizontal") {
       //copio la Y del barco para no modificar el objeto al ir descendiendo por el tablero
@@ -116,6 +138,7 @@ class Tablero {
   }
 
   colocarBarco(barco) {
+
     if (this.comprobarInsercion(barco) == true) {
       if (barco.orientacion == "vertical") {
         for (
@@ -135,6 +158,7 @@ class Tablero {
           this.casillas[barco.x][j] = "barco";
         }
       }
+      self.barcos.shift();
       this.actualizarTablero();
     }
   }

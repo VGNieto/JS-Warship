@@ -9,20 +9,26 @@
     <script src="Barco.js"></script>
   </head>
   <body>
-    <table id="juego" class="tablero"></table>
+    <table border="1" id="juego" class="tablero"></table>
 
-    <button id="colocarBarco">Colocar Barco</button>
+    <button id="colocarBarcos">Colocar Barcos</button>
+    <button id="horizontal" value="horizontal">Horizontal</button>
+    <button id="vertical" value="vertical">vertical</button>
 
     <script>
       var tablero = new Tablero(10, 10);
       var mibarco = new Barco(4);
-      
-      document.getElementById("colocarBarco").addEventListener("click", () => {
-        mibarco.posicionInicialX = parseInt(prompt("Fila: "));
-        mibarco.posicionInicialY = parseInt(prompt("Columna: "));
-        mibarco.establecer_orientacion =prompt("Horizontal o Vertical: ");
-        console.log(mibarco);
-         tablero.colocarBarco(mibarco);
+
+      document.getElementById("colocarBarcos").addEventListener("click", () => {
+        tablero.pintarBarcos();
+      });
+
+      document.getElementById("horizontal").addEventListener("click", () => {
+        tablero.barcos[0].establecer_orientacion = "horizontal";
+      });
+
+      document.getElementById("vertical").addEventListener("click", () => {
+        tablero.barcos[0].establecer_orientacion = "vertical";
       });
     </script>
   </body>
