@@ -1,33 +1,29 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Page Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="Tablero.js"></script>
     <script src="Barco.js"></script>
-</head>
-<body>
+  </head>
+  <body>
+    <table id="juego" class="tablero"></table>
 
-    <script> 
-    
-    var tablero= new Tablero(10,10);
-    /*tablero.crearTablero();*/
-    
-    var mibarco = new Barco(4);
-    mibarco.establecer_orientacion="vertical";
-    mibarco.posicionInicialX=3;
-    mibarco.posicionInicialY=9;
-    tablero.comprobarInsercion(mibarco);
-    tablero.colocarBarco(mibarco,3,9,"horizontal");
-   
+    <button id="colocarBarco">Colocar Barco</button>
 
-
-
-
+    <script>
+      var tablero = new Tablero(10, 10);
+      var mibarco = new Barco(4);
+      
+      document.getElementById("colocarBarco").addEventListener("click", () => {
+        mibarco.posicionInicialX = parseInt(prompt("Fila: "));
+        mibarco.posicionInicialY = parseInt(prompt("Columna: "));
+        mibarco.establecer_orientacion =prompt("Horizontal o Vertical: ");
+        console.log(mibarco);
+         tablero.colocarBarco(mibarco);
+      });
     </script>
-    
-    
-</body>
+  </body>
 </html>
