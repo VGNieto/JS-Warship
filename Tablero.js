@@ -17,10 +17,13 @@ class Tablero {
   //Edita la casilla que clickemos y dependiendo el resultado pondrá una cosa u otra.
   editarCasilla() {
     if (this.textContent === "barco") {
-      console.log("Aquí hay un barco amigo, buen trabajo");
+      this.textContent = "O"; //Lo que se pondrá.
+      self.casillas[Math.floor(this.id / self.x)][this.id % self.y] = "O";
     } else {
+
       this.textContent = "X"; //Lo que se pondrá.
       self.casillas[Math.floor(this.id / self.x)][this.id % self.y] = "X"; //Guardamos en el array la modificacion.
+      this.addEventListener("click", function nada(){console.log("ya has atacado")});
     }
     console.log(self.casillas);
     return true;
@@ -45,6 +48,12 @@ class Tablero {
     }
   }
 
+
+
+
+
+
+
   //Actualiza el tablero, con los nuevos atributos.
   actualizarTablero() {
 
@@ -63,6 +72,13 @@ class Tablero {
 
   //OK
   comprobarInsercion(barco) {
+    if(typeof barco =="undefined"){
+      if(typeof barco.orientacion =="undefined"){
+        console.log("orientacion no establecida");
+
+      }
+      console.log("barco erroneo");
+    }
     var bandera = true; //bandera que nos avisa si una casilla que va a ocupar el barco no es ocupable
     if (barco.orientacion == "horizontal") {
       //copio la Y del barco para no modificar el objeto al ir descendiendo por el tablero

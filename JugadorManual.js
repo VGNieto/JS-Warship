@@ -4,9 +4,15 @@ class JugadorManual extends Jugador{
         super(nombre);
     }
 
-    agregarBarco(barco){
+    agregarBarco(tablero,barco){
+        while(this.arrayBarcos.length!=4){
+            if(tablero.comprobarInsercion(barco)==true){
+                this.arrayBarcos.push(barco);
+            }
+        }
+        
 
-        this.arrayBarcos.push(barco);
+        
        
     }
 
