@@ -7,9 +7,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="Tablero.js"></script>
     <script src="Barco.js"></script>
+<<<<<<< HEAD
   </head>
   <body>
     <table id="juego" class="tablero"></table>
+=======
+</head>
+<body>
+
+    <script> 
+    
+    var tablero= new Tablero(10,10);
+    /*tablero.crearTablero();*/
+    
+    var mibarco = new Barco(4);
+    mibarco.establecer_orientacion="horizontal";
+    mibarco.posicionInicialX=3;
+    mibarco.posicionInicialY=6;
+    tablero.comprobarInsercion(mibarco);
+    tablero.colocarBarco(mibarco);
+    var barco2 = new Barco(4);
+    barco2.establecer_orientacion="vertical";
+    barco2.posicionInicialX=3;
+    barco2.posicionInicialY=6;
+    tablero.comprobarInsercion(mibarco);
+    tablero.colocarBarco(mibarco);
+   
+
+
+>>>>>>> 9dda3f4350cc5205d0a307b77ed84e0ccfb7abe9
 
     <button id="colocarBarco">Colocar Barco</button>
 
