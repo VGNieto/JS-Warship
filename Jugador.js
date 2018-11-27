@@ -10,6 +10,7 @@ class Jugador{
     agregarBarco(barco);
 
     comprobarAtaque(x,y){
+
         for(let i=0;i<this.ataques.length;i++){
             if(this.ataques[i]==""+x+""+y){
                 console.log("posicion atacada previamente")
@@ -22,7 +23,11 @@ class Jugador{
 
 
 
-    atacar(tablero_enemigo,x,y);
+    atacar(tablero_enemigo){
+
+            tablero_enemigo.pintarTablero();
+        
+    }
 
     
 }
