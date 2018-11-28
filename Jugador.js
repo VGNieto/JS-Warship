@@ -2,10 +2,8 @@ class Jugador{
 
     constructor(nombre,barcos,tableroHTML){
         this.ataques=new Array();
-        this.nombre=nombre;
-        this.arrayBarcos = barcos;
-        this.tableroHTML = tableroHTML;
-        this.tablero = new Tablero(10,10,this.tableroHTML);
+        this.nombre=nombre; 
+        this.tablero = new Tablero(10,10,tableroHTML,barcos);
     }
 
 
