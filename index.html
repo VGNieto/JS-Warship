@@ -5,22 +5,44 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="index.css" > <!-- Referencia al css -->
     <script src="Tablero.js"></script>
     <script src="Barco.js"></script>
+    <script src="Jugador.js"></script>
   </head>
   <body>
     <table border="1" id="juego" class="tablero"></table>
+    <table border="1" id="juego1" class="tablero1"></table>
 
-    <button id="colocarBarcos">Colocar Barcos</button>
-    <button id="horizontal" value="horizontal">Horizontal</button>
-    <button id="vertical" value="vertical">vertical</button>
-
+    <button id="horizontal" value="horizontal" >Horizontal</button>
+    <button id="vertical" value="vertical" >vertical</button>
+    <button id="colocarAleatorio" value="colocarAleatorio" >Colocar aleatoriamente</button>
+    <button id="prueba">prueba</button>
     <script>
-      var tablero = new Tablero(10, 10);
-      var mibarco = new Barco(4);
 
-      document.getElementById("colocarBarcos").addEventListener("click", () => {
-        tablero.pintarBarcos();
+      barcosJugador1 = new Array(new Barco(5),new Barco(4),new Barco(3),new Barco(3),new Barco(2));
+      tableroJugador = document.getElementById("juego");
+      jugador1 = new Jugador("victor",barcosJugador1,tableroJugador);
+      console.log(jugador1.tablero.casillas);
+
+      barcosJugador2 = new Array(new Barco(5),new Barco(4),new Barco(3),new Barco(3),new Barco(2));
+      tableroJugador2 = document.getElementById("juego1");
+      jugador2 = new Jugador("maquina",barcosJugador1,tableroJugador);
+      console.log(jugador2.tablero.casillas);
+
+
+      document.getElementById("colocarAleatorio").addEventListener("click", () => {
+        document.getElementById("horizontal").remove();
+        document.getElementById("vertical").remove();
+        jugador1.tablero.colocarBarcosAleatorio();
+        document.getElementById("colocarAleatorio").remove();
+      });
+
+      document.getElementById("prueba").addEventListener("click", () => {
+        console.log(tablero1.casillas);
+        console.log(tablero1.tablero.id);
+        console.log(tablero.tablero.id);
+        
       });
 
       document.getElementById("horizontal").addEventListener("click", () => {
