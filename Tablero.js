@@ -1,6 +1,5 @@
 class Tablero {
   constructor(x, y, tablero1, barcos) {
-    self = this;
     this.x = x;
     this.y = y;
     this.casillas = new Array(this.x);
@@ -14,41 +13,45 @@ class Tablero {
     }
   }
 
-  //Pinta el tablero y se modifica cada vez que clickemos una posición.
+  //Pinta el tablero y se mete un barco en la posición indicada.
   pintarBarcos() {
-    console.log(this.barcos);
     //Para cada posicion del array del tablero, creamos la tabla.
     var contadorPosiciones = 0;
     for (let i = 0; i < this.x; i++) {
-      var fila = this.tablero.insertRow(i);
-      for (let j = 0; j < this.y; j++) {
-        var dato = fila.insertCell(j);
-        fila.appendChild(dato);
-        dato.className = "datos";
-        dato.id = contadorPosiciones;
-        dato.innerHTML =
-          '<img src="agua.png" width=30px; height=30px; style="opacity:0.4"; />';
-
-        dato.addEventListener("click", this.agregarBarcoAlTablero);
-
-        contadorPosiciones++;
-      }
-      this.tablero.appendChild(fila);
-    }
+    //Para que cada vez que se ejecute el "click" estemos en la posición correcta, se ejecuta siempre la funcion en cada posicion.
+      (function(){ 
+          var fila = this.tablero.insertRow(i); //Insertamos una fila al tablero.
+          for (let j = 0; j < this.y; j++) {
+            (function(){ //Lo mismo sucede aquí, así podemos pasar como parametro el id de la posición en concreto y no siempre la última.
+            var dato = fila.insertCell(j); //Insetamos una celda a la fila.
+            fila.appendChild(dato); //Unimos esa celda a la fila.
+            dato.id = contadorPosiciones;
+            dato.innerHTML ='<img src="agua.png" width=30px; height=30px; style="opacity:0.4"; />';
+            //Cuando se produzca el click, se llamará a esa función.
+            dato.addEventListener("click",()=>this.agregarBarcoAlTablero(dato.id),false);
+            contadorPosiciones++;
+            }.bind(this)());}
+          this.tablero.appendChild(fila); //Unimos la fila con sus celdas al tablero.
+      }.bind(this)());
+  }
   }
 
-  agregarBarcoAlTablero() {
-    console.log(self.tablero);
-    for (let i = 0; i < self.barcos.length; i++) {
-      self.barcos[i].posicionInicialX = parseInt(this.id / self.x);
-      self.barcos[i].posicionInicialY = parseInt(this.id % self.y);
-      
-      self.colocarBarco(self.barcos[i]);
-      if (self.barcos.length === 0) {
+  //Agrega en la posición indicada un barco si es posible,recibe como parametro la posición.
+  agregarBarcoAlTablero(dato) {
+
+    //Recorremos el array de barcos y para cada uno le establecemos la posicion X y la posicion Y y lo colocamos.
+    for (let i = 0; i < this.barcos.length; i++) {
+      this.barcos[i].posicionInicialX = parseInt(dato / this.x);
+      this.barcos[i].posicionInicialY = parseInt(dato % this.y);
+      this.colocarBarco(this.barcos[i]);
+      //Una vez coloquemos todos borraremos los botones para escoger la orientación.
+      if (this.barcos.length === 0) {
         document.getElementById("horizontal").remove();
         document.getElementById("vertical").remove();
       }
+
     }
+   
   }
   colocarBarcosAleatorio() {
     for (let i = 0; i < this.barcos.length; i++) {
@@ -89,7 +92,6 @@ class Tablero {
       }
 
       this.barcos.shift();
-      console.log(this.casillas);
       this.actualizarTablero();
 
       return true;
@@ -100,7 +102,7 @@ class Tablero {
 
 
 actualizarTablero() {
-
+  if(this.tablero.id == "juego"){
   var celdas = this.tablero.getElementsByTagName("td");
   for (let i = 0; i < celdas.length; i++) {
     if (
@@ -113,20 +115,21 @@ actualizarTablero() {
     }
   }
 }
+}
 
   editarCasilla() {
     if (this.textContent === "barco") {
       this.textContent = "O"; //Lo que se pondrá.
-      self.casillas[Math.floor(this.id / self.x)][this.id % self.y] = "O";
+      this.casillas[Math.floor(this.id / this.x)][this.id % this.y] = "O";
     } else {
       this.textContent = "X"; //Lo que se pondrá.
-      self.casillas[Math.floor(this.id / self.x)][this.id % self.y] = "X"; //Guardamos en el array la modificacion.
+      this.casillas[Math.floor(this.id / this.x)][this.id % this.y] = "X"; //Guardamos en el array la modificacion.
       this.addEventListener("click", function nada() {
         console.log("ya has atacado");
       });
     }
 
-    console.log(self.casillas);
+    console.log(this.casillas);
   }
 
   //Actualiza el tablero, con los nuevos atributos.

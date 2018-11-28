@@ -24,18 +24,18 @@
       var tableroJugador1 = document.getElementById("juego");
       jugador1 = new Jugador("victor",barcosJugador1,tableroJugador1);
       jugador1.tablero.pintarBarcos();
-      console.log(jugador1.tablero);
+      
+      barcosJugador2 = new Array(new Barco(5),new Barco(4),new Barco(3),new Barco(3),new Barco(2));
+      var tableroJugador2 = document.getElementById("juego1");
+      jugador2 = new Jugador("maquina",barcosJugador2,tableroJugador2);
+      jugador2.tablero.pintarBarcos();
+      jugador2.tablero.colocarBarcosAleatorio();
 
       document.getElementById("colocarAleatorio").addEventListener("click", () => {
         document.getElementById("horizontal").remove();
         document.getElementById("vertical").remove();
         jugador1.tablero.colocarBarcosAleatorio();
         document.getElementById("colocarAleatorio").remove();
-      });
-
-      document.getElementById("prueba").addEventListener("click", () => {
-        console.log( jugador1.tablero.casillas);
-        
       });
 
       document.getElementById("horizontal").addEventListener("click", () => {
@@ -47,11 +47,15 @@
         jugador1.tablero.barcos[0].establecer_orientacion = "vertical";
       });
 
-      barcosJugador2 = new Array(new Barco(5),new Barco(4),new Barco(3),new Barco(3),new Barco(2));
-      var tableroJugador2 = document.getElementById("juego1");
-      jugador2 = new Jugador("maquina",barcosJugador2,tableroJugador2);
-      jugador2.tablero.pintarBarcos();
-      console.log(jugador2.tablero);
+
+      document.getElementById("prueba").addEventListener("click", () => {
+        console.log( jugador1.tablero.casillas);
+
+        console.log( jugador2.tablero.casillas);
+        
+      });
+
+      
     </script>
   </body>
 </html>
