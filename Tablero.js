@@ -5,6 +5,8 @@ class Tablero {
     this.casillas = new Array(this.x);
     this.barcos = barcos;
     this.tablero = tablero1; //Cogemos la tabla del html
+    this.nombresBarco = new Array("Portaviones","Acorazado","Crucero","Submarino","Destructor");
+    this.barcosDañados = new Array();
     for (var i = 0; i < this.x; i++) {
       this.casillas[i] = new Array(this.y);
       for (var j = 0; j < this.casillas[i].length; j++) {
@@ -18,32 +20,37 @@ class Tablero {
     //Para cada posicion del array del tablero, creamos la tabla.
     var contadorPosiciones = 0;
     for (let i = 0; i < this.x; i++) {
-    //Para que cada vez que se ejecute el "click" estemos en la posición correcta, se ejecuta siempre la funcion en cada posicion.
-      (function(){ 
-          var fila = this.tablero.insertRow(i); //Insertamos una fila al tablero.
-          for (let j = 0; j < this.y; j++) {
-            (function(){ //Lo mismo sucede aquí, así podemos pasar como parametro el id de la posición en concreto y no siempre la última.
-            var dato = fila.insertCell(j); //Insetamos una celda a la fila.
-            fila.appendChild(dato); //Unimos esa celda a la fila.
-            dato.id = contadorPosiciones;
-            dato.innerHTML ='<img src="agua.png" width=30px; height=30px; style="opacity:0.4"; />';
-            //Cuando se produzca el click, se llamará a esa función.
-            dato.addEventListener("click",()=>this.agregarBarcoAlTablero(dato.id),false);
-            contadorPosiciones++;
-            }.bind(this)());}
-          this.tablero.appendChild(fila); //Unimos la fila con sus celdas al tablero.
-      }.bind(this)());
-  }
+      let fila = this.tablero.insertRow(i); //Insertamos una fila al tablero.
+      for (let j = 0; j < this.y; j++) {
+        let dato = fila.insertCell(j); //Insetamos una celda a la fila.
+        fila.appendChild(dato); //Unimos esa celda a la fila.
+        dato.id = contadorPosiciones;
+        dato.innerHTML =
+          '<img src="agua.png" width=30px; height=30px; style="opacity:0.4"; />';
+        //Cuando se produzca el click, se llamará a esa función.
+        dato.addEventListener(
+          "click",
+          () => this.agregarBarcoAlTablero(dato.id),
+          false
+        );
+        contadorPosiciones++;
+
+        this.tablero.appendChild(fila); //Unimos la fila con sus celdas al tablero.
+      }
+    }
   }
 
   //Agrega en la posición indicada un barco si es posible,recibe como parametro la posición.
   agregarBarcoAlTablero(dato) {
-
     //Recorremos el array de barcos y para cada uno le establecemos la posicion X y la posicion Y y lo colocamos.
+   
     for (let i = 0; i < this.barcos.length; i++) {
       this.barcos[i].posicionInicialX = parseInt(dato / this.x);
       this.barcos[i].posicionInicialY = parseInt(dato % this.y);
+      this.barcos[i].nombre = this.nombresBarco[i];
+      
       this.colocarBarco(this.barcos[i]);
+
       //Una vez coloquemos todos borraremos los botones para escoger la orientación.
       if (this.barcos.length === 0) {
         document.getElementById("horizontal").remove();
@@ -51,26 +58,30 @@ class Tablero {
       }
 
     }
-   
+    
   }
   colocarBarcosAleatorio() {
-    for (let i = 0; i < this.barcos.length; i++) {
-      do {
-        this.barcos[i].posicionInicialX = parseInt(Math.random() * 10);
-        this.barcos[i].posicionInicialY = parseInt(Math.random() * 10);
-        var ori = parseInt(Math.random() * 2);
-        if (ori === 1) {
-          this.barcos[i].establecer_orientacion = "horizontal";
-        } else {
-          this.barcos[i].establecer_orientacion = "vertical";
-        }
-      } while (this.colocarBarco(this.barcos[i]) != true);
-      i = -1;
-    }
+
+    
+      for (let i = 0; i < this.barcos.length; i++) {
+        do {
+          this.barcos[i].posicionInicialX = parseInt(Math.random() * 10);
+          this.barcos[i].posicionInicialY = parseInt(Math.random() * 10);
+          this.barcos[i].nombre = this.nombresBarco[i];
+          var ori = parseInt(Math.random() * 2);
+          if (ori === 1) {
+            this.barcos[i].establecer_orientacion = "horizontal";
+          } else {
+            this.barcos[i].establecer_orientacion = "vertical";
+          }
+        } while (this.colocarBarco(this.barcos[i]) != true);
+        i = -1;
+      }
+
+
   }
 
   colocarBarco(barco) {
-   
     if (this.comprobarInsercion(barco) == true) {
       if (barco.orientacion == "vertical") {
         for (
@@ -78,7 +89,7 @@ class Tablero {
           contador < barco.longitud;
           i++, contador++
         ) {
-          this.casillas[i][barco.y] = "barco";
+          this.casillas[i][barco.y] =barco.nom;
         }
       } else {
         //colorcar barco horizontal
@@ -87,11 +98,15 @@ class Tablero {
           contador < barco.longitud;
           j++, contador++
         ) {
-          this.casillas[barco.x][j] = "barco";
+          this.casillas[barco.x][j] = barco.nom;
         }
       }
 
       this.barcos.shift();
+      this.nombresBarco.shift();
+      if(this.tablero.id === "juego1"){
+        this.añadirClickEnemigo();
+      }
       this.actualizarTablero();
 
       return true;
@@ -100,22 +115,67 @@ class Tablero {
     }
   }
 
+  añadirClickEnemigo(){
 
-actualizarTablero() {
-  if(this.tablero.id == "juego"){
-  var celdas = this.tablero.getElementsByTagName("td");
-  for (let i = 0; i < celdas.length; i++) {
-    if (
-      this.casillas[Math.floor(celdas[i].id / this.x)][
-        celdas[i].id % this.y
-      ] == "barco"
-    ) {
-      celdas[i].innerHTML =
-        '<img src="barco.png" width=30px; height=30px; />';
-    }
+    if (this.tablero.id == "juego1") {
+      let celdas = this.tablero.getElementsByTagName("td");
+      for (let i = 0; i < celdas.length; i++) {
+        let id = celdas[i].id;
+        celdas[i].addEventListener("mouseover",()=>this.revelarBarcos(id));
+      }
   }
 }
-}
+
+  revelarBarcos(id){
+    
+    if (this.tablero.id == "juego1") {
+      let celdas = this.tablero.getElementsByTagName("td");
+        if(celdas[id].id == id && this.casillas[Math.floor(id / this.x)][
+          id % this.y
+        ] !== "agua" && celdas[id].id == id && this.casillas[Math.floor(id / this.x)][
+          id % this.y
+        ] !== "barcoDañado" ){
+          this.casillas[Math.floor(id / this.x)][
+            id % this.y
+          ] = "barcoDañado";
+          this.barcosDañados.push(id);
+          console.log(this.barcosDañados.length);
+          if(this.barcosDañados.length >= 17){
+            alert("¡HAS GANADO!");
+          }
+        }
+      
+      this.actualizarTablero();
+    }
+  }
+
+  actualizarTablero() {
+    if (this.tablero.id == "juego") {
+      var celdas = this.tablero.getElementsByTagName("td");
+      for (let i = 0; i < celdas.length; i++) {
+        if (
+          this.casillas[Math.floor(celdas[i].id / this.x)][
+            celdas[i].id % this.y
+          ] !="agua"
+        ) {
+          celdas[i].innerHTML =
+            '<img src="barco.png" width=30px; height=30px; />';
+        }
+      }
+    } else {
+      var celdas = this.tablero.getElementsByTagName("td");
+      for (let i = 0; i < celdas.length; i++) {
+        if (
+          this.casillas[Math.floor(celdas[i].id / this.x)][
+            celdas[i].id % this.y
+          ] == "barcoDañado"
+        ) {
+          celdas[i].innerHTML =
+            '<img src="barcoDañado.png" width=30px; height=30px; />';
+        }
+      }
+    }
+  }
 
   editarCasilla() {
     if (this.textContent === "barco") {
@@ -133,7 +193,6 @@ actualizarTablero() {
   }
 
   //Actualiza el tablero, con los nuevos atributos.
-  
 
   comprobarInsercion(barco) {
     if (typeof barco == "undefined") {
@@ -194,6 +253,4 @@ actualizarTablero() {
       }
     }
   }
-
 }
-  
