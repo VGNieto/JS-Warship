@@ -30,6 +30,13 @@
       jugador2 = new Jugador("maquina",barcosJugador2,tableroJugador2);
       jugador2.tablero.pintarBarcos();
       jugador2.tablero.colocarBarcosAleatorio();
+      
+
+
+      
+
+
+
 
       document.getElementById("colocarAleatorio").addEventListener("click", () => {
         document.getElementById("horizontal").remove();
@@ -52,7 +59,7 @@
         console.log( jugador1.tablero.casillas);
 
         console.log( jugador2.tablero.casillas);
-        
+        jugador2.atacarAleatorio(jugador1);
         
       });
 

@@ -21,11 +21,23 @@ class Jugador{
 
 
 
-    atacar(tablero_enemigo){
+    atacarAleatorio(jugadorEnemigo){
 
-            tablero_enemigo.pintarTablero();
+        let posicionAtaqueX = parseInt(Math.random() * 10);
+        let posicionAtaqueY = parseInt(Math.random() * 10);
+        let posicion = posicionAtaqueX+""+posicionAtaqueY;
+        jugadorEnemigo.tablero.revelarBarcos(parseInt(posicion));
         
     }
+
+    atacar(){
+        if(this.tablero.añadirClickEnemigo() === true){
+            this.tablero.añadirClickEnemigo();
+        } else{
+            this.atacarAleatorio(jugadorEnemigo);
+        }
+    }
+     
 
     
 }

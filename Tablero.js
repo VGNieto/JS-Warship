@@ -121,36 +121,58 @@ class Tablero {
       let celdas = this.tablero.getElementsByTagName("td");
       for (let i = 0; i < celdas.length; i++) {
         let id = celdas[i].id;
-        celdas[i].addEventListener("mouseover",()=>this.revelarBarcos(id));
+        celdas[i].addEventListener("click",()=>this.revelarBarcos(id));
       }
   }
 }
 
   revelarBarcos(id){
     
-    if (this.tablero.id == "juego1") {
+    
       let celdas = this.tablero.getElementsByTagName("td");
         if(celdas[id].id == id && this.casillas[Math.floor(id / this.x)][
           id % this.y
         ] !== "agua" && celdas[id].id == id && this.casillas[Math.floor(id / this.x)][
           id % this.y
-        ] !== "barcoDañado" ){
+        ] !== "barcoDañado" && this.casillas[Math.floor(id / this.x)][
+          id % this.y
+        ] !== "aguaTocada" ){
           this.casillas[Math.floor(id / this.x)][
             id % this.y
           ] = "barcoDañado";
           this.barcosDañados.push(id);
+          
           console.log(this.barcosDañados.length);
           if(this.barcosDañados.length >= 17){
             alert("¡HAS GANADO!");
+            
+            
           }
+          this.actualizarTablero();
+          return true;
+        } else if(celdas[id].id == id && this.casillas[Math.floor(id / this.x)][
+          id % this.y
+        ] !== "aguaTocada" && celdas[id].id == id && this.casillas[Math.floor(id / this.x)][
+          id % this.y
+        ] !== "barcoDañado"){
+          this.casillas[Math.floor(id / this.x)][
+            id % this.y
+          ] = "aguaTocada";
+          this.actualizarTablero();
+          return true;
+        } else{
+          return false;
         }
       
-      this.actualizarTablero();
-    }
+    
+  }
+
+  atacar(){
+
   }
 
   actualizarTablero() {
-    if (this.tablero.id == "juego") {
+    
       var celdas = this.tablero.getElementsByTagName("td");
       for (let i = 0; i < celdas.length; i++) {
         if (
@@ -158,11 +180,13 @@ class Tablero {
             celdas[i].id % this.y
           ] !="agua"
         ) {
+          if(this.tablero.id === "juego"){
           celdas[i].innerHTML =
             '<img src="barco.png" width=30px; height=30px; />';
+          }
         }
       }
-    } else {
+    
       var celdas = this.tablero.getElementsByTagName("td");
       for (let i = 0; i < celdas.length; i++) {
         if (
@@ -172,9 +196,14 @@ class Tablero {
         ) {
           celdas[i].innerHTML =
             '<img src="barcoDañado.png" width=30px; height=30px; />';
+        } else if(this.casillas[Math.floor(celdas[i].id / this.x)][
+          celdas[i].id % this.y
+        ] == "aguaTocada"){
+          celdas[i].innerHTML =
+            '<img src="aguaTocada.png" width=30px; height=30px; />';
         }
       }
-    }
+    
   }
 
   editarCasilla() {
