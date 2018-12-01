@@ -310,7 +310,276 @@ comprobarBarcoHundido(string){
       }
     }
   }
+
+  ataque1(tablero,ataque){
+    switch(ataque.direccion){
+      case "undefined":
+        if(ataque.ultimoAtaque[1]>0&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]!="barcoDañado"){
+          if(tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]=="agua"){//si me encuentro agua
+            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1] = "aguaTocada";
+            ataque.direccion="DRCHA";
+          }else{
+            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1] = "barcoDañado";
+            ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0];
+            ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1]-1;
+            ataque.direccion="VA";
+            ataque.orientacion="vertical";
+            ataque.aciertos++;
+          }
+          break;
+        }else{
+          ataque.direccion="DRCHA";
+        }
+      case "DRCHA":
+        if(ataque.ultimoAtaque[0]<9&&tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]!="barcoDañado"){
+          if(tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]=="agua"){//si me encuentro agua
+            tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]] = "aguaTocada";
+            ataque.direccion="VD";
+          }else{
+            tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]] = "barcoDañado";
+            ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0]+1;
+            ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1];
+            ataque.direccion="DRCHA";
+            ataque.orientacion="horizontal";
+            ataque.aciertos++;
+          }
+          break;
+        }else{
+          ataque.direccion="VD";
+        }
+      case "VD":
+        if(ataque.ultimoAtaque[1]<9&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]!="barcoDañado"){
+          if(tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]=="agua"){//si me encuentro agua
+            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1] = "aguaTocada";
+            ataque.direccion="IZDA";
+          }else{
+            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1] = "barcoDañado";
+            ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0];
+            ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1]+1;
+            ataque.direccion="VD";
+            ataque.orientacion="vertical";
+            ataque.aciertos++;
+          }
+          break;
+        }else{
+          ataque.direccion="IZDA";
+        }
+      case "IZDA":
+        if(ataque.ultimoAtaque[1]<9&&tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]]!="barcoDañado"){
+          if(tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]]=="agua"){//si me encuentro agua
+            tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]] = "aguaTocada";
+            ataque.direccion="unknown";
+          }else{
+            tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]] = "barcoDañado";
+            ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0]-1;
+            ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1];
+            ataque.direccion="IZDA";
+            ataque.orientacion="horizontal";
+            ataque.aciertos++;
+          }
+          break;
+        }else{
+          ataque.direccion="unknown";
+        }
+      default:
+        ataque=inicializar_ataque(ataque);
+        ataqueAleatorio(tablero,ataque);
+        break;
+    }
+    
+    return ataque;
+  }
+
+  ataque2(tablero,ataque){
+        
+    switch(ataque.tipoBarco){
+      case "Portaviones":
+          switch(ataque.orientacion){
+            case "horizontal":
+              
+              let i=0;
+              while(tablero.casillas[ataque.ultimoAtaque[0]][i]!="Portaviones"){
+                i++;
+              }
+              tablero.casillas[ataque.ultimoAtaque[0]][i]!="barcoDañado";
+              ataque.aciertos++;
+              if(ataque.aciertos==5){
+                console.log("portaviones destruido");
+                ataque=inicializar_ataque(ataque);
+              }
+              break;
+
+            
+            case "vertical":
+              let i=0;
+              while(tablero.casillas[i][ataque.ultimoAtaque[0]]!="Portaviones"){
+                i++;
+              }
+              tablero.casillas[i][ataque.ultimoAtaque[0]]!="barcoDañado";
+              ataque.aciertos++;
+              if(ataque.aciertos==5){
+                console.log("portaviones destruido");
+                ataque=inicializar_ataque(ataque);
+              }
+              break;
+            default:
+              ataque=inicializar_ataque(ataque);
+              ataqueAleatorio(tablero,ataque);
+              break;
+          }
+      case "Acorazado":
+          switch(ataque.orientacion){
+            case "horizontal":
+              
+              let i=0;
+              while(tablero.casillas[ataque.ultimoAtaque[0]][i]!="Acorazado"){
+                i++;
+              }
+              tablero.casillas[ataque.ultimoAtaque[0]][i]!="barcoDañado";
+              ataque.aciertos++;
+              if(ataque.aciertos==5){
+                console.log("Acorazado destruido");
+                ataque=inicializar_ataque(ataque);
+              }
+              break;
+
+            
+            case "vertical":
+              let i=0;
+              while(tablero.casillas[i][ataque.ultimoAtaque[0]]!="Acorazado"){
+                i++;
+              }
+              tablero.casillas[i][ataque.ultimoAtaque[0]]!="barcoDañado";
+              ataque.aciertos++;
+              if(ataque.aciertos==5){
+                console.log("Acorazado destruido");
+                ataque=inicializar_ataque(ataque);
+              }
+              break;
+            default:
+              ataque=inicializar_ataque(ataque);
+              ataqueAleatorio(tablero,ataque);
+              break;
+          }
+      case "Crucero":
+          switch(ataque.orientacion){
+            case "horizontal":
+              
+              let i=0;
+              while(tablero.casillas[ataque.ultimoAtaque[0]][i]!="Crucero"){
+                i++;
+              }
+              tablero.casillas[ataque.ultimoAtaque[0]][i]!="barcoDañado";
+              ataque.aciertos++;
+              if(ataque.aciertos==3){
+                console.log("Crucero destruido");
+                ataque=inicializar_ataque(ataque);
+              }
+              break;
+
+            
+            case "vertical":
+              let i=0;
+              while(tablero.casillas[i][ataque.ultimoAtaque[0]]!="Crucero"){
+                i++;
+              }
+              tablero.casillas[i][ataque.ultimoAtaque[0]]!="barcoDañado";
+              ataque.aciertos++;
+              if(ataque.aciertos==5){
+                console.log("Crucero destruido");
+                ataque=inicializar_ataque(ataque);
+              }
+              break;
+            default:
+              ataque=inicializar_ataque(ataque);
+              ataqueAleatorio(tablero,ataque);
+              break;
+          }
+      case "Submarino":
+          switch(ataque.orientacion){
+            case "horizontal":
+              
+              let i=0;
+              while(tablero.casillas[ataque.ultimoAtaque[0]][i]!="Submarino"){
+                i++;
+              }
+              tablero.casillas[ataque.ultimoAtaque[0]][i]!="barcoDañado";
+              ataque.aciertos++;
+              if(ataque.aciertos==3){
+                console.log("Crucero destruido");
+                ataque=inicializar_ataque(ataque);
+              }
+              break;
+
+            
+            case "vertical":
+              let i=0;
+              while(tablero.casillas[i][ataque.ultimoAtaque[0]]!="Submarino"){
+                i++;
+              }
+              tablero.casillas[i][ataque.ultimoAtaque[0]]!="barcoDañado";
+              ataque.aciertos++;
+              if(ataque.aciertos==5){
+                console.log("Sumarino destruido");
+                ataque=inicializar_ataque(ataque);
+              }
+              break;
+            default:
+              ataque=inicializar_ataque(ataque);
+              ataqueAleatorio(tablero,ataque);
+              break;
+          }
+      default:
+          ataque=inicializar_ataque(ataque);
+          ataqueAleatorio(tablero,ataque);
+          break;
+
+    }
+    return ataque;
+
+  }
   
+  ataqueAleatorio(tablero,ataque){
+    
+    do{
+      var ataque_X= parseInt(Math.random() * 10);
+      var ataque_Y= parseInt(Math.random() * 10);
+    }while(tablero.casillas[ataque_X][ataque_Y] == "aguaTocada"||tablero.casillas[ataque_X][ataque_Y] == "barcoTocado");
+      
+    if(tablero.casillas[ataque_X][ataque_Y]=="agua"){//si me encuentro agua
+        tablero.casillas[ataque_X][ataque_Y] = "aguaTocada";
+        ataque.ultimoAtaque[0]=ataque_X;
+        ataque.ultimoAtaque[1]=ataque_Y;
+      
+      }else{//si me encuentro un barco
+        ataque.primerAtaqueExitoso[0]=ataque_X;
+        ataque.primerAtaqueExitoso[2]=ataque_Y;
+        ataque.aciertos=1;
+        ataque.tipoBarco=tablero.casillas[ataque_X][ataque_Y];
+        tablero.casillas[ataque_X][ataque_Y] = "barcoDañado";
+        ataque.ultimoAtaque[0]=ataque_X;
+        ataque.ultimoAtaque[1]=ataque_Y;
+      }
+    return ataque;
+  }
+
+  ataqueEnemigo(tablero,ataque){
+    
+
+    /*if(datos_obtenidos[3])COMPROBAR SI EL BARCO ESTA HUNDIDO*/
+    if (ataque.aciertos!=-1){//si no es el primer acierto exitoso
+      if(ataque.aciertos==1){//si el lanzamiento aleatorio fue el primer acierto
+        ataque=ataque1(tablero,ataque);
+        
+      }else{//llevo mas de un acierto
+        ataque=ataque2(tablero,ataque);
+      }
+    }else{
+      ataque=ataqueAleatorio(tablero,ataque);
+      
+  }
+
+  }
   
 }
 
