@@ -342,7 +342,6 @@ class Tablero {
       }
     }
   }
-<<<<<<< HEAD
 
   ataque1(tablero,ataque){
     switch(ataque.direccion){
@@ -614,8 +613,6 @@ class Tablero {
 
   }
   
-=======
->>>>>>> 600d6d8a823aa27373ed94a33033c448dd130325
 }
 
 module.exports=Tablero;
