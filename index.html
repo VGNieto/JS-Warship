@@ -6,37 +6,60 @@
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" type="text/css" href="index.css" > <!-- Referencia al css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+				 
     <script src="Tablero.js"></script>
     <script src="Barco.js"></script>
     <script src="Jugador.js"></script>
   </head>
   <body>
-    <table border="1" id="juego" class="tablero"></table>
-    <table border="1" id="juego1" class="tablero1"></table>
 
-    <button id="horizontal" value="horizontal" >Horizontal</button>
-    <button id="vertical" value="vertical" >vertical</button>
-    <button id="colocarAleatorio" value="colocarAleatorio" >Colocar aleatoriamente</button>
-    <button id="prueba">prueba</button>
+      <section class="container row">
+        
+        <table class="col s12 m12 l12 xl5" id="juego1" class="tablero1"></table>
+
+          <div class="input-field col s12 m12 l12 xl2">
+            <textarea  id="resultados" rows="15" cols="80" disabled ></textarea>
+          </div>
+        
+        <table class="col s12 m12 l12 xl5" id="juego" class="tablero"></table>
+        <div class="right-align">
+          <a class="waves-effect waves-light btn-small" id="horizontal">Horizontal</a>
+          <a class="waves-effect waves-light btn-small" id="vertical">Vertical</a>
+          <a class="waves-effect waves-light btn-small" id="colocarAleatorio">Aleatorio</a>
+        </div>   
+      </section> 
+
     <script>
 
+      
       barcosJugador1 = new Array(new Barco(5),new Barco(4),new Barco(3),new Barco(3),new Barco(2));
       var tableroJugador1 = document.getElementById("juego");
-      jugador1 = new Jugador("victor",barcosJugador1,tableroJugador1);
-      jugador1.tablero.pintarBarcos();
+      jugador1 = new Jugador("jugador1",barcosJugador1,tableroJugador1);
+      
+      
       
       barcosJugador2 = new Array(new Barco(5),new Barco(4),new Barco(3),new Barco(3),new Barco(2));
       var tableroJugador2 = document.getElementById("juego1");
       jugador2 = new Jugador("maquina",barcosJugador2,tableroJugador2);
+      
+
+
+      jugador1.jugadorEn = jugador2;
+      jugador2.jugadorEn = jugador1;
+
+      jugador1.crearTablero();
+      jugador1.tablero.pintarBarcos();
+      
+
+      jugador2.crearTablero();
       jugador2.tablero.pintarBarcos();
-      jugador2.tablero.colocarBarcosAleatorio();
       
-
-
-      
-
-
-
 
       document.getElementById("colocarAleatorio").addEventListener("click", () => {
         document.getElementById("horizontal").remove();
@@ -52,15 +75,6 @@
 
       document.getElementById("vertical").addEventListener("click", () => {
         jugador1.tablero.barcos[0].establecer_orientacion = "vertical";
-      });
-
-
-      document.getElementById("prueba").addEventListener("click", () => {
-        console.log( jugador1.tablero.casillas);
-
-        console.log( jugador2.tablero.casillas);
-        jugador2.atacarAleatorio(jugador1);
-        
       });
 
       

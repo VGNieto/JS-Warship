@@ -1,12 +1,17 @@
 class Tablero {
-  constructor(x, y, tablero1, barcos) {
+  constructor(x, y, tablero1, barcos,jugadorEnemigo) {
     this.x = x;
     this.y = y;
+    this.jugadorEnemigo = jugadorEnemigo;
     this.casillas = new Array(this.x);
     this.barcos = barcos;
     this.tablero = tablero1; //Cogemos la tabla del html
     this.nombresBarco = new Array("Portaviones","Acorazado","Crucero","Submarino","Destructor");
     this.barcosDañados = new Array();
+    this.resultados = document.getElementById("resultados");
+    this.resultados.style.height = (this.resultados.scrollHeight+70)+'px';
+    this.resultados.style.resize = "none";
+
     for (var i = 0; i < this.x; i++) {
       this.casillas[i] = new Array(this.y);
       for (var j = 0; j < this.casillas[i].length; j++) {
@@ -25,88 +30,79 @@ class Tablero {
         let dato = fila.insertCell(j); //Insetamos una celda a la fila.
         fila.appendChild(dato); //Unimos esa celda a la fila.
         dato.id = contadorPosiciones;
-        dato.innerHTML =
-          '<img src="agua.png" width=30px; height=30px; style="opacity:0.4"; />';
+        dato.innerHTML = '<img src="agua.png" width=30px; height=30px; style="opacity:0.4"; />';
         //Cuando se produzca el click, se llamará a esa función.
-        dato.addEventListener(
-          "click",
-          () => this.agregarBarcoAlTablero(dato.id),
-          false
-        );
+        if(this.tablero.id === "juego"){
+          dato.addEventListener("click",() => this.agregarBarcoAlTablero(dato.id),false);
+        }
         contadorPosiciones++;
-
         this.tablero.appendChild(fila); //Unimos la fila con sus celdas al tablero.
       }
     }
   }
 
+  
   //Agrega en la posición indicada un barco si es posible,recibe como parametro la posición.
   agregarBarcoAlTablero(dato) {
-    //Recorremos el array de barcos y para cada uno le establecemos la posicion X y la posicion Y y lo colocamos.
-   
+    //Recorremos el array de barcos y para cada uno le establecemos la posicion X y la posicion Y y lo colocamos.  
+    if(this.barcos[0].orientacion === undefined){
+      this.resultados.value = "Escoge una orientación para el "+this.nombresBarco[0];
+      this.resultados.scrollTop = this.resultados.scrollHeight;
+
+    } else{
     for (let i = 0; i < this.barcos.length; i++) {
       this.barcos[i].posicionInicialX = parseInt(dato / this.x);
       this.barcos[i].posicionInicialY = parseInt(dato % this.y);
       this.barcos[i].nombre = this.nombresBarco[i];
       
       this.colocarBarco(this.barcos[i]);
-
-      //Una vez coloquemos todos borraremos los botones para escoger la orientación.
       if (this.barcos.length === 0) {
         document.getElementById("horizontal").remove();
         document.getElementById("vertical").remove();
+        document.getElementById("colocarAleatorio").remove();
       }
-
     }
-    
   }
+}
   colocarBarcosAleatorio() {
-
-    
-      for (let i = 0; i < this.barcos.length; i++) {
-        do {
-          this.barcos[i].posicionInicialX = parseInt(Math.random() * 10);
-          this.barcos[i].posicionInicialY = parseInt(Math.random() * 10);
-          this.barcos[i].nombre = this.nombresBarco[i];
-          var ori = parseInt(Math.random() * 2);
-          if (ori === 1) {
-            this.barcos[i].establecer_orientacion = "horizontal";
-          } else {
-            this.barcos[i].establecer_orientacion = "vertical";
-          }
-        } while (this.colocarBarco(this.barcos[i]) != true);
-        i = -1;
-      }
-
-
+  
+    for (let i = 0; i < this.barcos.length; i++) {
+      do {
+        this.barcos[i].posicionInicialX = parseInt(Math.random() * 10);
+        this.barcos[i].posicionInicialY = parseInt(Math.random() * 10);
+        this.barcos[i].nombre = this.nombresBarco[i];
+        var ori = parseInt(Math.random() * 2);
+        if (ori === 1) {
+          this.barcos[i].establecer_orientacion = "horizontal";
+        } else {
+          this.barcos[i].establecer_orientacion = "vertical";
+        }
+      } while (this.colocarBarco(this.barcos[i]) != true);
+      i = -1;
+    }
   }
 
   colocarBarco(barco) {
     if (this.comprobarInsercion(barco) == true) {
       if (barco.orientacion == "vertical") {
-        for (
-          var i = barco.x, contador = 0;
-          contador < barco.longitud;
-          i++, contador++
-        ) {
+        for (var i = barco.x, contador = 0;contador < barco.longitud;i++, contador++) {
           this.casillas[i][barco.y] =barco.nom;
         }
       } else {
         //colorcar barco horizontal
-        for (
-          var j = barco.y, contador = 0;
-          contador < barco.longitud;
-          j++, contador++
-        ) {
+        for (var j = barco.y, contador = 0;contador < barco.longitud;j++, contador++) {
           this.casillas[barco.x][j] = barco.nom;
         }
       }
 
       this.barcos.shift();
       this.nombresBarco.shift();
-      if(this.tablero.id === "juego1"){
+
+      if(this.barcos.length === 0){
+        this.jugadorEnemigo.tablero.colocarBarcosAleatorio();
         this.añadirClickEnemigo();
       }
+
       this.actualizarTablero();
 
       return true;
@@ -116,112 +112,135 @@ class Tablero {
   }
 
   añadirClickEnemigo(){
-
+    
     if (this.tablero.id == "juego1") {
       let celdas = this.tablero.getElementsByTagName("td");
       for (let i = 0; i < celdas.length; i++) {
         let id = celdas[i].id;
-        celdas[i].addEventListener("click",()=>this.revelarBarcos(id));
+        celdas[i].addEventListener("click",()=>{
+            if(this.revelarBarcos(id) === true ){
+              window.setTimeout(()=>this.atacarEnemigo(),1500);              
+             }; 
+          });
       }
+    } 
+
+}
+
+atacarEnemigo(){
+  let posicionAtaqueX = parseInt(Math.random() * 10);
+  let posicionAtaqueY = parseInt(Math.random() * 10);
+  let posicion = posicionAtaqueX+""+posicionAtaqueY;
+  this.jugadorEnemigo.tablero.revelarBarcos(parseInt(posicion));
+}
+
+comprobarBarcoHundido(string){
+  var contador = 0;
+  for(let i = 0; i<this.x;i++){
+    for(let j=0;j<this.y;j++){
+      if (  string.indexOf(this.casillas[i][j].toString()) > -1){
+        contador++;
+      }
+    } 
+  }
+  if(contador == 1){
+   return true;
   }
 }
 
   revelarBarcos(id){
+
+    let celdas = this.tablero.getElementsByTagName("td");
+    let casilla = this.casillas[Math.floor(id / this.x)][id % this.y];
+    let posicion = Math.floor((id / this.x)+1) + "-" + Math.floor((id % this.y)+1);
     
-    
-      let celdas = this.tablero.getElementsByTagName("td");
-        if(celdas[id].id == id && this.casillas[Math.floor(id / this.x)][
-          id % this.y
-        ] !== "agua" && celdas[id].id == id && this.casillas[Math.floor(id / this.x)][
-          id % this.y
-        ] !== "barcoDañado" && this.casillas[Math.floor(id / this.x)][
-          id % this.y
-        ] !== "aguaTocada" ){
-          this.casillas[Math.floor(id / this.x)][
-            id % this.y
-          ] = "barcoDañado";
-          this.barcosDañados.push(id);
-          
-          console.log(this.barcosDañados.length);
-          if(this.barcosDañados.length >= 17){
-            alert("¡HAS GANADO!");
-            
-            
+      if(celdas[id].id == id && casilla !== "agua" && celdas[id].id == id &&casilla !== "barcoDañado" && casilla !== "aguaTocada" ){
+        
+        
+          if(this.tablero.id === "juego1"){
+            this.resultados.value="¡Has atacado a la posición "+ posicion +" y has dañado un " + casilla+"!";
+            this.resultados.scrollTop = this.resultados.scrollHeight;
+          } else{
+            this.resultados.value+="\n\n¡Te han atacado a la posición "+ posicion +" y te han dañado un " + casilla+"!";
+            this.resultados.scrollTop = this.resultados.scrollHeight;
           }
-          this.actualizarTablero();
-          return true;
-        } else if(celdas[id].id == id && this.casillas[Math.floor(id / this.x)][
-          id % this.y
-        ] !== "aguaTocada" && celdas[id].id == id && this.casillas[Math.floor(id / this.x)][
-          id % this.y
-        ] !== "barcoDañado"){
-          this.casillas[Math.floor(id / this.x)][
-            id % this.y
-          ] = "aguaTocada";
-          this.actualizarTablero();
-          return true;
-        } else{
-          return false;
+        
+        
+        
+        if(this.comprobarBarcoHundido(casilla.toString())){
+          if(this.tablero.id === "juego1"){
+            this.resultados.value= "¡Has destruido el " + casilla+"!";
+            this.resultados.scrollTop = this.resultados.scrollHeight;
+          } else{
+            this.resultados.value+= "\n\n¡Te han destruido el " + casilla+"!";
+            this.resultados.scrollTop = this.resultados.scrollHeight;
+          }
+        };
+        
+        this.casillas[Math.floor(id / this.x)][id % this.y] = "barcoDañado";
+        this.barcosDañados.push(casilla);
+        
+        this.actualizarTablero();
+        if(this.barcosDañados.length >= 17){
+          if( window.confirm("¡HAS GANADO! ¿Quieres empezar una nueva partida?")){
+            location.reload();
+          }
+          
+        } else if (this.jugadorEnemigo.tablero.barcosDañados.length >= 17){
+            if( window.confirm("¡HAS PERDIDO! ¿Quieres empezar una nueva partida?")){
+              location.reload();
+            }
         }
-      
-    
+        return true;
+
+      } else if(casilla !== "aguaTocada" && celdas[id].id == id && casilla!== "barcoDañado"){
+          if(this.tablero.id === "juego1"){
+            this.resultados.value= "¡Has disparado al agua!";
+            this.resultados.scrollTop = this.resultados.scrollHeight;
+          } else{
+            this.resultados.value+="\n\n¡El enemigo ha fallado!";
+            this.resultados.scrollTop = this.resultados.scrollHeight;
+
+          }
+        this.casillas[Math.floor(id / this.x)][id % this.y] = "aguaTocada";
+        this.actualizarTablero();
+        return true;
+
+      } else if(casilla === "aguaTocada" || casilla === "barcoDañado"){
+        this.resultados.value= "¡Ahí ya has disparado!";
+        this.resultados.scrollTop = this.resultados.scrollHeight;
+        return false;
+      } else{
+        return false;
+      }
+
   }
 
-  atacar(){
 
-  }
 
   actualizarTablero() {
-    
-      var celdas = this.tablero.getElementsByTagName("td");
-      for (let i = 0; i < celdas.length; i++) {
-        if (
-          this.casillas[Math.floor(celdas[i].id / this.x)][
-            celdas[i].id % this.y
-          ] !="agua"
-        ) {
-          if(this.tablero.id === "juego"){
-          celdas[i].innerHTML =
-            '<img src="barco.png" width=30px; height=30px; />';
-          }
+  
+    var celdas = this.tablero.getElementsByTagName("td");
+    for (let i = 0; i < celdas.length; i++) {
+      let casilla = this.casillas[Math.floor(celdas[i].id / this.x)][celdas[i].id % this.y];
+      if ( casilla !="agua") {
+        if(this.tablero.id === "juego"){
+        celdas[i].innerHTML = '<img src="barco.png" width=30px; height=30px; />';
         }
       }
-    
-      var celdas = this.tablero.getElementsByTagName("td");
-      for (let i = 0; i < celdas.length; i++) {
-        if (
-          this.casillas[Math.floor(celdas[i].id / this.x)][
-            celdas[i].id % this.y
-          ] == "barcoDañado"
-        ) {
-          celdas[i].innerHTML =
-            '<img src="barcoDañado.png" width=30px; height=30px; />';
-        } else if(this.casillas[Math.floor(celdas[i].id / this.x)][
-          celdas[i].id % this.y
-        ] == "aguaTocada"){
-          celdas[i].innerHTML =
-            '<img src="aguaTocada.png" width=30px; height=30px; />';
-        }
-      }
-    
-  }
-
-  editarCasilla() {
-    if (this.textContent === "barco") {
-      this.textContent = "O"; //Lo que se pondrá.
-      this.casillas[Math.floor(this.id / this.x)][this.id % this.y] = "O";
-    } else {
-      this.textContent = "X"; //Lo que se pondrá.
-      this.casillas[Math.floor(this.id / this.x)][this.id % this.y] = "X"; //Guardamos en el array la modificacion.
-      this.addEventListener("click", function nada() {
-        console.log("ya has atacado");
-      });
     }
 
-    console.log(this.casillas);
+    for (let i = 0; i < celdas.length; i++) {
+      let casilla = this.casillas[Math.floor(celdas[i].id / this.x)][celdas[i].id % this.y];
+      if (casilla == "barcoDañado") {
+        celdas[i].innerHTML = '<img src="barcoDañado.png" width=30px; height=30px; />';
+      } else if(casilla == "aguaTocada"){
+        celdas[i].innerHTML ='<img src="aguaTocada.png" width=30px; height=30px; />';
+      }
+    }
+    
   }
 
-  //Actualiza el tablero, con los nuevos atributos.
 
   comprobarInsercion(barco) {
     if (typeof barco == "undefined") {
@@ -232,6 +251,7 @@ class Tablero {
     if (typeof barco.orientacion == "undefined") {
       return false;
     }
+
     var bandera = true; //bandera que nos avisa si una casilla que va a ocupar el barco no es ocupable
     if (barco.orientacion == "horizontal") {
       //copio la Y del barco para no modificar el objeto al ir descendiendo por el tablero
