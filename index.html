@@ -5,17 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Page Title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" type="text/css" href="index.css" > <!-- Referencia al css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
-		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 				 
-    <script src="Tablero.js"></script>
-    <script src="Barco.js"></script>
-    <script src="Jugador.js"></script>
+    <script src="./js/Tablero.js"></script>
+    <script src="./js/Barco.js"></script>
+    <script src="./js/Jugador.js"></script>
+    <script src="./js/main.js"></script>
+
   </head>
   <body>
 
@@ -35,49 +33,6 @@
         </div>   
       </section> 
 
-    <script>
-
-      
-      barcosJugador1 = new Array(new Barco(5),new Barco(4),new Barco(3),new Barco(3),new Barco(2));
-      var tableroJugador1 = document.getElementById("juego");
-      jugador1 = new Jugador("jugador1",barcosJugador1,tableroJugador1);
-      
-      
-      
-      barcosJugador2 = new Array(new Barco(5),new Barco(4),new Barco(3),new Barco(3),new Barco(2));
-      var tableroJugador2 = document.getElementById("juego1");
-      jugador2 = new Jugador("maquina",barcosJugador2,tableroJugador2);
-      
-
-
-      jugador1.jugadorEn = jugador2;
-      jugador2.jugadorEn = jugador1;
-
-      jugador1.crearTablero();
-      jugador1.tablero.pintarBarcos();
-      
-
-      jugador2.crearTablero();
-      jugador2.tablero.pintarBarcos();
-      
-
-      document.getElementById("colocarAleatorio").addEventListener("click", () => {
-        document.getElementById("horizontal").remove();
-        document.getElementById("vertical").remove();
-        jugador1.tablero.colocarBarcosAleatorio();
-        document.getElementById("colocarAleatorio").remove();
-      });
-
-      document.getElementById("horizontal").addEventListener("click", () => {
-       jugador1.tablero.barcos[0].establecer_orientacion = "horizontal";
-       
-        });
-
-      document.getElementById("vertical").addEventListener("click", () => {
-        jugador1.tablero.barcos[0].establecer_orientacion = "vertical";
-      });
-
-      
-    </script>
+    <script> jugar(); </script>
   </body>
 </html>

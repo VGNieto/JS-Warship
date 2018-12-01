@@ -18,6 +18,7 @@ class Tablero {
         this.casillas[i][j] = "agua";
       }
     }
+
   }
 
   //Pinta el tablero y se mete un barco en la posición indicada.
@@ -30,7 +31,7 @@ class Tablero {
         let dato = fila.insertCell(j); //Insetamos una celda a la fila.
         fila.appendChild(dato); //Unimos esa celda a la fila.
         dato.id = contadorPosiciones;
-        dato.innerHTML = '<img src="agua.png" width=30px; height=30px; style="opacity:0.4"; />';
+        dato.innerHTML = '<img src="imagenes/agua.png" width=30px; height=30px; style="opacity:0.4"; />';
         //Cuando se produzca el click, se llamará a esa función.
         if(this.tablero.id === "juego"){
           dato.addEventListener("click",() => this.agregarBarcoAlTablero(dato.id),false);
@@ -150,11 +151,10 @@ comprobarBarcoHundido(string){
 
   revelarBarcos(id){
 
-    let celdas = this.tablero.getElementsByTagName("td");
     let casilla = this.casillas[Math.floor(id / this.x)][id % this.y];
     let posicion = Math.floor((id / this.x)+1) + "-" + Math.floor((id % this.y)+1);
     
-      if(celdas[id].id == id && casilla !== "agua" && celdas[id].id == id &&casilla !== "barcoDañado" && casilla !== "aguaTocada" ){
+      if(casilla !== "agua" && casilla !== "barcoDañado" && casilla !== "aguaTocada" ){
         
         
           if(this.tablero.id === "juego1"){
@@ -176,9 +176,10 @@ comprobarBarcoHundido(string){
             this.resultados.scrollTop = this.resultados.scrollHeight;
           }
         };
-        
-        this.casillas[Math.floor(id / this.x)][id % this.y] = "barcoDañado";
         this.barcosDañados.push(casilla);
+        console.log(this.barcosDañados);
+        this.casillas[Math.floor(id / this.x)][id % this.y] = "barcoDañado";
+        
         
         this.actualizarTablero();
         if(this.barcosDañados.length >= 17){
@@ -193,7 +194,7 @@ comprobarBarcoHundido(string){
         }
         return true;
 
-      } else if(casilla !== "aguaTocada" && celdas[id].id == id && casilla!== "barcoDañado"){
+      } else if(casilla !== "aguaTocada" && casilla!== "barcoDañado"){
           if(this.tablero.id === "juego1"){
             this.resultados.value= "¡Has disparado al agua!";
             this.resultados.scrollTop = this.resultados.scrollHeight;
@@ -206,7 +207,7 @@ comprobarBarcoHundido(string){
         this.actualizarTablero();
         return true;
 
-      } else if(casilla === "aguaTocada" || casilla === "barcoDañado"){
+      } else if( this.tablero.id === "juego1" && casilla === "aguaTocada" || casilla === "barcoDañado"){
         this.resultados.value= "¡Ahí ya has disparado!";
         this.resultados.scrollTop = this.resultados.scrollHeight;
         return false;
@@ -225,7 +226,7 @@ comprobarBarcoHundido(string){
       let casilla = this.casillas[Math.floor(celdas[i].id / this.x)][celdas[i].id % this.y];
       if ( casilla !="agua") {
         if(this.tablero.id === "juego"){
-        celdas[i].innerHTML = '<img src="barco.png" width=30px; height=30px; />';
+        celdas[i].innerHTML = '<img src="imagenes/barco.png" width=30px; height=30px; />';
         }
       }
     }
@@ -233,14 +234,21 @@ comprobarBarcoHundido(string){
     for (let i = 0; i < celdas.length; i++) {
       let casilla = this.casillas[Math.floor(celdas[i].id / this.x)][celdas[i].id % this.y];
       if (casilla == "barcoDañado") {
-        celdas[i].innerHTML = '<img src="barcoDañado.png" width=30px; height=30px; />';
+        celdas[i].innerHTML = '<img src="imagenes/barcoDañado.png" width=30px; height=30px; />';
       } else if(casilla == "aguaTocada"){
-        celdas[i].innerHTML ='<img src="aguaTocada.png" width=30px; height=30px; />';
+        celdas[i].innerHTML ='<img src="imagenes/aguaTocada.png" width=30px; height=30px; />';
       }
     }
     
   }
 
+  comprobarTest(dato){
+    if(dato === "hola"){
+      return true;
+    } else{
+      return false;
+    }
+  }
 
   comprobarInsercion(barco) {
     if (typeof barco == "undefined") {
@@ -302,4 +310,9 @@ comprobarBarcoHundido(string){
       }
     }
   }
+  
+  
 }
+
+
+

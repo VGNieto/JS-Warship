@@ -1,3 +1,0 @@
-class JugadorAleatorio extends Jugador{
-    
-}
