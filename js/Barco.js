@@ -25,3 +25,5 @@ class Barco{
     
 
 }
+
+module.exports=Barco;
