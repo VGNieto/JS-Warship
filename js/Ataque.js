@@ -19,6 +19,7 @@ class Ataque{
         ataque.direccion="unknown";//direccion por la que me muevo dentro del tablero VA DRCHA VD IZDA
         ataque.hundido=false;//saber si un barco está hundido
         ataque.aciertos=-1;
+        
         ataque.tipoBarco="unknown";
         return ataque;
 
