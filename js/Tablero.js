@@ -4,6 +4,7 @@ class Tablero {
     this.y = y;
     this.jugadorEnemigo = jugadorEnemigo;
     this.casillas = new Array(this.x);
+    this.ataque_enemigo=new Ataque ();
     this.barcos = barcos;
     this.tablero = tablero1; //Cogemos la tabla del html
     this.nombresBarco = new Array(
@@ -139,7 +140,8 @@ class Tablero {
         let id = celdas[i].id;
         celdas[i].addEventListener("click", () => {
           if (this.revelarBarcos(id) === true) {
-            window.setTimeout(() => this.atacarEnemigo(), 1500);
+            //window.setTimeout(() => this.atacarEnemigo(), 1500);
+            this.ataque_enemigo=this.ataqueEnemigo(this.jugadorEnemigo.tablero,this.ataque_enemigo);
           }
         });
       }
@@ -344,78 +346,111 @@ class Tablero {
   }
 
   ataque1(tablero,ataque){
+    
     switch(ataque.direccion){
-      case "undefined":
-        if(ataque.ultimoAtaque[1]>0&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]!="barcoDañado"){
-          if(tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]=="agua"){//si me encuentro agua
-            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1] = "aguaTocada";
-            ataque.direccion="DRCHA";
-          }else{
-            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1] = "barcoDañado";
-            ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0];
-            ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1]-1;
-            ataque.direccion="VA";
-            ataque.orientacion="vertical";
-            ataque.aciertos++;
-          }
-          break;
-        }else{
-          ataque.direccion="DRCHA";
-        }
-      case "DRCHA":
-        if(ataque.ultimoAtaque[0]<9&&tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]!="barcoDañado"){
-          if(tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]=="agua"){//si me encuentro agua
-            tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]] = "aguaTocada";
-            ataque.direccion="VD";
-          }else{
-            tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]] = "barcoDañado";
-            ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0]+1;
-            ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1];
-            ataque.direccion="DRCHA";
-            ataque.orientacion="horizontal";
-            ataque.aciertos++;
-          }
-          break;
-        }else{
-          ataque.direccion="VD";
-        }
-      case "VD":
-        if(ataque.ultimoAtaque[1]<9&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]!="barcoDañado"){
-          if(tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]=="agua"){//si me encuentro agua
-            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1] = "aguaTocada";
-            ataque.direccion="IZDA";
-          }else{
-            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1] = "barcoDañado";
-            ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0];
-            ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1]+1;
-            ataque.direccion="VD";
-            ataque.orientacion="vertical";
-            ataque.aciertos++;
-          }
-          break;
-        }else{
-          ataque.direccion="IZDA";
-        }
-      case "IZDA":
-        if(ataque.ultimoAtaque[1]<9&&tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]]!="barcoDañado"){
+      case "unknown":
+        if(ataque.ultimoAtaque[0]>0&&tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]]!="barcoDañado"){
           if(tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]]=="agua"){//si me encuentro agua
             tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]] = "aguaTocada";
-            ataque.direccion="unknown";
+            ataque.direccion="DRCHA";
+            tablero.resultados.value += "\n\n¡El enemigo ha fallado!";
+            tablero.resultados.scrollTop = this.resultados.scrollHeight;
+            tablero.actualizarTablero();
           }else{
             tablero.casillas[ataque.ultimoAtaque[0]-1][ataque.ultimoAtaque[1]] = "barcoDañado";
             ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0]-1;
             ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1];
+            ataque.direccion="VA";
+            ataque.orientacion="vertical";
+            ataque.aciertos++;
+            let posicion=ataque.ultimoAtaque[0]+"-"+ataque.ultimoAtaque[1];
+            tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion +" y te han dañado un " +ataque.tipoBarco +"!";
+            tablero.resultados.scrollTop = this.resultados.scrollHeight;
+            tablero.actualizarTablero();
+          }
+          
+        }else{
+          ataque.direccion="DRCHA";
+        }
+        break;
+      case "DRCHA":
+        if(ataque.ultimoAtaque[1]<9&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]!="barcoDañado"){
+          if(tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]=="agua"){//si me encuentro agua
+            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1] = "aguaTocada";
+            ataque.direccion="VD";
+            tablero.resultados.value += "\n\n¡El enemigo ha fallado!";
+            tablero.resultados.scrollTop = this.resultados.scrollHeight;
+            tablero.actualizarTablero();
+          }else{
+            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1] = "barcoDañado";
+            ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0];
+            ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1]+1;
+            ataque.direccion="DRCHA";
+            ataque.orientacion="horizontal";
+            ataque.aciertos++;
+            let posicion=ataque.ultimoAtaque[0]+"-"+ataque.ultimoAtaque[1];
+            tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion +" y te han dañado un " +ataque.tipoBarco +"!";
+            tablero.resultados.scrollTop = this.resultados.scrollHeight;
+            tablero.actualizarTablero();
+          }
+          
+        }else{
+          ataque.direccion="VD";
+        }
+        break;
+      case "VD":
+        if(ataque.ultimoAtaque[0]<9&&tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]!="barcoDañado"){
+          if(tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]=="agua"){//si me encuentro agua
+            tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]] = "aguaTocada";
+            ataque.direccion="IZDA";
+            tablero.resultados.value += "\n\n¡El enemigo ha fallado!";
+            tablero.resultados.scrollTop = this.resultados.scrollHeight;
+            tablero.actualizarTablero();
+          }else{
+            tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]] = "barcoDañado";
+            ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0]+1;
+            ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1];
+            ataque.direccion="VD";
+            ataque.orientacion="vertical";
+            ataque.aciertos++;
+            let posicion=ataque.ultimoAtaque[0]+"-"+ataque.ultimoAtaque[1];
+            tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion +" y te han dañado un " +ataque.tipoBarco +"!";
+            tablero.resultados.scrollTop = this.resultados.scrollHeight;
+            tablero.actualizarTablero();
+          }
+          
+        }else{
+          ataque.direccion="IZDA";
+        }
+        break;
+      case "IZDA":
+        if(ataque.ultimoAtaque[1]>0&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]!="barcoDañado"){
+          if(tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]=="agua"){//si me encuentro agua
+            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1] = "aguaTocada";
+            ataque.direccion="unknown";
+            tablero.resultados.value += "\n\n¡El enemigo ha fallado!";
+            tablero.resultados.scrollTop = this.resultados.scrollHeight;
+            tablero.actualizarTablero();
+          }else{
+            tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1] = "barcoDañado";
+            ataque.ultimoAtaque[0]=ataque.ultimoAtaque[0];
+            ataque.ultimoAtaque[1]=ataque.ultimoAtaque[1]-1;
             ataque.direccion="IZDA";
             ataque.orientacion="horizontal";
             ataque.aciertos++;
+            let posicion=ataque.ultimoAtaque[0]+"-"+ataque.ultimoAtaque[1];
+            tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion +" y te han dañado un " +ataque.tipoBarco +"!";
+            tablero.resultados.scrollTop = this.resultados.scrollHeight;
+            tablero.actualizarTablero();
           }
-          break;
+          
         }else{
           ataque.direccion="unknown";
         }
+        break;
       default:
-        ataque=inicializar_ataque(ataque);
-        ataqueAleatorio(tablero,ataque);
+        ataque=ataque.inicializar_ataque(ataque);
+        ataque=tablero.ataqueAleatorio(tablero,ataque);
         break;
     }
     
@@ -423,147 +458,209 @@ class Tablero {
   }
 
   ataque2(tablero,ataque){
-        
+    console.log(tablero);
+    console.log(ataque); 
     switch(ataque.tipoBarco){
       case "Portaviones":
           switch(ataque.orientacion){
             case "horizontal":
               
-              let i=0;
-              while(tablero.casillas[ataque.ultimoAtaque[0]][i]!="Portaviones"){
-                i++;
+              let contador1=0;
+              while(tablero.casillas[ataque.ultimoAtaque[0]][contador1]!="Portaviones"){
+                contador1++;
               }
-              tablero.casillas[ataque.ultimoAtaque[0]][i]!="barcoDañado";
+              tablero.casillas[ataque.ultimoAtaque[0]][contador1]="barcoDañado";
               ataque.aciertos++;
+              let posicion1=ataque.ultimoAtaque[0]+"-"+contador1;
+              tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion1 +" y te han dañado un " +ataque.tipoBarco +"!";
+              tablero.resultados.scrollTop = this.resultados.scrollHeight;
+              tablero.actualizarTablero();
               if(ataque.aciertos==5){
                 console.log("portaviones destruido");
-                ataque=inicializar_ataque(ataque);
+                tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
+                tablero.resultados.scrollTop = this.resultados.scrollHeight;
+                tablero.actualizarTablero();
+                ataque=ataque.inicializar_ataque(ataque);
               }
               break;
 
             
             case "vertical":
-              let i=0;
-              while(tablero.casillas[i][ataque.ultimoAtaque[0]]!="Portaviones"){
-                i++;
+              let contador2=0;
+              while(tablero.casillas[contador2][ataque.ultimoAtaque[1]]!="Portaviones"){
+                contador2++;
               }
-              tablero.casillas[i][ataque.ultimoAtaque[0]]!="barcoDañado";
+              tablero.casillas[contador2][ataque.ultimoAtaque[1]]="barcoDañado";
               ataque.aciertos++;
+              let posicion2=contador2+"-"+ataque.ultimoAtaque[1];
+              tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion2 +" y te han dañado un " +ataque.tipoBarco +"!";
+              tablero.resultados.scrollTop = this.resultados.scrollHeight;
+              tablero.actualizarTablero();
               if(ataque.aciertos==5){
                 console.log("portaviones destruido");
-                ataque=inicializar_ataque(ataque);
+                tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
+                tablero.resultados.scrollTop = this.resultados.scrollHeight;
+                tablero.actualizarTablero();
+                ataque=ataque.inicializar_ataque(ataque);
               }
               break;
             default:
-              ataque=inicializar_ataque(ataque);
-              ataqueAleatorio(tablero,ataque);
+              ataque=ataque.inicializar_ataque(ataque);
+              ataque=tablero.ataqueAleatorio(tablero,ataque);
               break;
           }
+          break;
       case "Acorazado":
           switch(ataque.orientacion){
             case "horizontal":
               
-              let i=0;
-              while(tablero.casillas[ataque.ultimoAtaque[0]][i]!="Acorazado"){
-                i++;
+              let contador3=0;
+              while(tablero.casillas[ataque.ultimoAtaque[0]][contador3]!="Acorazado"){
+                contador3++;
               }
-              tablero.casillas[ataque.ultimoAtaque[0]][i]!="barcoDañado";
+              tablero.casillas[ataque.ultimoAtaque[0]][contador3]="barcoDañado";
               ataque.aciertos++;
-              if(ataque.aciertos==5){
+              let posicion3=ataque.ultimoAtaque[0]+"-"+contador3;
+              tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion3 +" y te han dañado un " +ataque.tipoBarco +"!";
+              tablero.resultados.scrollTop = this.resultados.scrollHeight;
+              tablero.actualizarTablero();
+              if(ataque.aciertos==4){
                 console.log("Acorazado destruido");
-                ataque=inicializar_ataque(ataque);
+                tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
+                tablero.resultados.scrollTop = this.resultados.scrollHeight;
+                tablero.actualizarTablero();
+                ataque=ataque.inicializar_ataque(ataque);
               }
               break;
 
             
             case "vertical":
-              let i=0;
-              while(tablero.casillas[i][ataque.ultimoAtaque[0]]!="Acorazado"){
-                i++;
+              let contador4=0;
+              while(tablero.casillas[contador4][ataque.ultimoAtaque[1]]!="Acorazado"){
+                contador4++;
               }
-              tablero.casillas[i][ataque.ultimoAtaque[0]]!="barcoDañado";
+              tablero.casillas[contador4][ataque.ultimoAtaque[1]]="barcoDañado";
               ataque.aciertos++;
-              if(ataque.aciertos==5){
+              let posicion4=contador4+"-"+ataque.ultimoAtaque[1];
+              tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion4 +" y te han dañado un " +ataque.tipoBarco +"!";
+              tablero.resultados.scrollTop = this.resultados.scrollHeight;
+              tablero.actualizarTablero();
+              if(ataque.aciertos==4){
                 console.log("Acorazado destruido");
-                ataque=inicializar_ataque(ataque);
+                tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
+                tablero.resultados.scrollTop = this.resultados.scrollHeight;
+                tablero.actualizarTablero();
+                ataque=ataque.inicializar_ataque(ataque);
               }
               break;
             default:
-              ataque=inicializar_ataque(ataque);
-              ataqueAleatorio(tablero,ataque);
+              ataque=ataque.inicializar_ataque(ataque);
+              ataque=tablero.ataqueAleatorio(tablero,ataque);
               break;
           }
+          break;
       case "Crucero":
           switch(ataque.orientacion){
             case "horizontal":
               
-              let i=0;
-              while(tablero.casillas[ataque.ultimoAtaque[0]][i]!="Crucero"){
-                i++;
+              let contador5=0;
+              while(tablero.casillas[ataque.ultimoAtaque[0]][contador5]!="Crucero"){
+                contador5++;
               }
-              tablero.casillas[ataque.ultimoAtaque[0]][i]!="barcoDañado";
+              tablero.casillas[ataque.ultimoAtaque[0]][contador5]="barcoDañado";
               ataque.aciertos++;
+              let posicion5=ataque.ultimoAtaque[0]+"-"+contador5;
+              tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion5 +" y te han dañado un " +ataque.tipoBarco +"!";
+              tablero.resultados.scrollTop = this.resultados.scrollHeight;
+              tablero.actualizarTablero();
               if(ataque.aciertos==3){
                 console.log("Crucero destruido");
-                ataque=inicializar_ataque(ataque);
+                
+                tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
+                tablero.resultados.scrollTop = this.resultados.scrollHeight;
+                tablero.actualizarTablero();
+                ataque=ataque.inicializar_ataque(ataque);
               }
               break;
 
             
             case "vertical":
-              let i=0;
-              while(tablero.casillas[i][ataque.ultimoAtaque[0]]!="Crucero"){
-                i++;
+              let contador6=0;
+              while(tablero.casillas[contador6][ataque.ultimoAtaque[1]]!="Crucero"){
+                contador6++;
               }
-              tablero.casillas[i][ataque.ultimoAtaque[0]]!="barcoDañado";
+              tablero.casillas[contador6][ataque.ultimoAtaque[1]]="barcoDañado";
               ataque.aciertos++;
-              if(ataque.aciertos==5){
+              let posicion6=contador6+"-"+ataque.ultimoAtaque[1];
+              tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion6 +" y te han dañado un " +ataque.tipoBarco +"!";
+              tablero.resultados.scrollTop = this.resultados.scrollHeight;
+              tablero.actualizarTablero();
+              if(ataque.aciertos==3){
                 console.log("Crucero destruido");
-                ataque=inicializar_ataque(ataque);
+                tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
+                tablero.resultados.scrollTop = this.resultados.scrollHeight;
+                tablero.actualizarTablero();
+                ataque=ataque.inicializar_ataque(ataque);
               }
               break;
             default:
-              ataque=inicializar_ataque(ataque);
-              ataqueAleatorio(tablero,ataque);
+              ataque=ataque.inicializar_ataque(ataque);
+              ataque=tablero.ataqueAleatorio(tablero,ataque);
               break;
           }
+          break;
       case "Submarino":
           switch(ataque.orientacion){
             case "horizontal":
               
-              let i=0;
-              while(tablero.casillas[ataque.ultimoAtaque[0]][i]!="Submarino"){
-                i++;
+              let contador7=0;
+              while(tablero.casillas[ataque.ultimoAtaque[0]][contador7]!="Submarino"){
+                contador7++;
               }
-              tablero.casillas[ataque.ultimoAtaque[0]][i]!="barcoDañado";
+              tablero.casillas[ataque.ultimoAtaque[0]][contador7]="barcoDañado";
               ataque.aciertos++;
+              let posicion7=ataque.ultimoAtaque[0]+"-"+contador7;
+              tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion7 +" y te han dañado un " +ataque.tipoBarco +"!";
+              tablero.resultados.scrollTop = this.resultados.scrollHeight;
+              tablero.actualizarTablero();
               if(ataque.aciertos==3){
                 console.log("Crucero destruido");
-                ataque=inicializar_ataque(ataque);
+                tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
+                tablero.resultados.scrollTop = this.resultados.scrollHeight;
+                tablero.actualizarTablero();
+                ataque=ataque.inicializar_ataque(ataque);
               }
               break;
 
             
             case "vertical":
-              let i=0;
-              while(tablero.casillas[i][ataque.ultimoAtaque[0]]!="Submarino"){
-                i++;
+              let contador8=0;
+              while(tablero.casillas[contador8][ataque.ultimoAtaque[1]]!="Submarino"){
+                contador8++;
               }
-              tablero.casillas[i][ataque.ultimoAtaque[0]]!="barcoDañado";
+              tablero.casillas[contador8][ataque.ultimoAtaque[1]]="barcoDañado";
               ataque.aciertos++;
+              let posicion8=contador8+"-"+ataque.ultimoAtaque[1];
+              tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion8 +" y te han dañado un " +ataque.tipoBarco +"!";
+              tablero.resultados.scrollTop = this.resultados.scrollHeight;
+              tablero.actualizarTablero();
               if(ataque.aciertos==5){
                 console.log("Sumarino destruido");
-                ataque=inicializar_ataque(ataque);
+                tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
+                tablero.resultados.scrollTop = this.resultados.scrollHeight;
+                tablero.actualizarTablero();
+                ataque=ataque.inicializar_ataque(ataque);
               }
               break;
             default:
-              ataque=inicializar_ataque(ataque);
-              ataqueAleatorio(tablero,ataque);
+              ataque=ataque.inicializar_ataque(ataque);
+              ataque=tablero.ataqueAleatorio(tablero,ataque);
               break;
           }
+          break;
       default:
-          ataque=inicializar_ataque(ataque);
-          ataqueAleatorio(tablero,ataque);
+          ataque=ataque.inicializar_ataque(ataque);
+          ataque=tablero.ataqueAleatorio(tablero,ataque);
           break;
 
     }
@@ -573,22 +670,36 @@ class Tablero {
   
   ataqueAleatorio(tablero,ataque){
     
-    do{
-      var ataque_X= parseInt(Math.random() * 10);
-      var ataque_Y= parseInt(Math.random() * 10);
-    }while(tablero.casillas[ataque_X][ataque_Y] == "aguaTocada"||tablero.casillas[ataque_X][ataque_Y] == "barcoTocado");
+    var ataque_X= parseInt(Math.random() * 10);
+    var ataque_Y= parseInt(Math.random() * 10);
+      
+    while(tablero.casillas[ataque_X][ataque_Y] == "aguaTocada"||tablero.casillas[ataque_X][ataque_Y] == "barcoDañado"){
+      ataque_X= parseInt(Math.random() * 10);
+      ataque_Y= parseInt(Math.random() * 10);
+    }
       
     if(tablero.casillas[ataque_X][ataque_Y]=="agua"){//si me encuentro agua
         tablero.casillas[ataque_X][ataque_Y] = "aguaTocada";
+        tablero.resultados.value += "\n\n¡El enemigo ha fallado!";
+        tablero.resultados.scrollTop = this.resultados.scrollHeight;
+        tablero.actualizarTablero();
+        //let posicion = ataque_X + "" + ataque_Y;
+        //tablero.revelarBarcos(parseInt(posicion));
         ataque.ultimoAtaque[0]=ataque_X;
         ataque.ultimoAtaque[1]=ataque_Y;
+
       
       }else{//si me encuentro un barco
         ataque.primerAtaqueExitoso[0]=ataque_X;
-        ataque.primerAtaqueExitoso[2]=ataque_Y;
+        ataque.primerAtaqueExitoso[1]=ataque_Y;
         ataque.aciertos=1;
         ataque.tipoBarco=tablero.casillas[ataque_X][ataque_Y];
         tablero.casillas[ataque_X][ataque_Y] = "barcoDañado";
+        let posicion=ataque.primerAtaqueExitoso[0]+"-"+ataque.primerAtaqueExitoso[1];
+        tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion +" y te han dañado un " +ataque.tipoBarco +"!";
+        tablero.resultados.scrollTop = this.resultados.scrollHeight;
+        tablero.actualizarTablero();
+        //this.jugadorEnemigo.tablero.revelarBarcos(parseInt(tablero.casillas[ataque_X][ataque_Y]));
         ataque.ultimoAtaque[0]=ataque_X;
         ataque.ultimoAtaque[1]=ataque_Y;
       }
@@ -596,20 +707,22 @@ class Tablero {
   }
 
   ataqueEnemigo(tablero,ataque){
-    
+    console.log(ataque);
+    console.log(tablero);
 
     /*if(datos_obtenidos[3])COMPROBAR SI EL BARCO ESTA HUNDIDO*/
     if (ataque.aciertos!=-1){//si no es el primer acierto exitoso
       if(ataque.aciertos==1){//si el lanzamiento aleatorio fue el primer acierto
-        ataque=ataque1(tablero,ataque);
+        ataque=this.ataque1(tablero,ataque);
         
       }else{//llevo mas de un acierto
-        ataque=ataque2(tablero,ataque);
+        ataque=this.ataque2(tablero,ataque);
       }
     }else{
-      ataque=ataqueAleatorio(tablero,ataque);
+      ataque=tablero.ataqueAleatorio(tablero,ataque);
       
   }
+  return ataque;
 
   }
   
