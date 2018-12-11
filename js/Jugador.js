@@ -1,3 +1,5 @@
+
+
 class Jugador{
 
     constructor(nombre,barcos,tableroHTML){

@@ -368,11 +368,12 @@ class Tablero {
             tablero.resultados.scrollTop = this.resultados.scrollHeight;
             tablero.actualizarTablero();
           }
+          break;
           
         }else{
           ataque.direccion="DRCHA";
         }
-        break;
+        
       case "DRCHA":
         if(ataque.ultimoAtaque[1]<9&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]!="barcoDañado"){
           if(tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]+1]=="agua"){//si me encuentro agua
@@ -393,11 +394,11 @@ class Tablero {
             tablero.resultados.scrollTop = this.resultados.scrollHeight;
             tablero.actualizarTablero();
           }
-          
+          break;
         }else{
           ataque.direccion="VD";
         }
-        break;
+        
       case "VD":
         if(ataque.ultimoAtaque[0]<9&&tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]!="barcoDañado"){
           if(tablero.casillas[ataque.ultimoAtaque[0]+1][ataque.ultimoAtaque[1]]=="agua"){//si me encuentro agua
@@ -418,11 +419,12 @@ class Tablero {
             tablero.resultados.scrollTop = this.resultados.scrollHeight;
             tablero.actualizarTablero();
           }
+          break;
           
         }else{
           ataque.direccion="IZDA";
         }
-        break;
+        
       case "IZDA":
         if(ataque.ultimoAtaque[1]>0&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]!="aguaTocada"&&tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]!="barcoDañado"){
           if(tablero.casillas[ataque.ultimoAtaque[0]][ataque.ultimoAtaque[1]-1]=="agua"){//si me encuentro agua
@@ -443,15 +445,24 @@ class Tablero {
             tablero.resultados.scrollTop = this.resultados.scrollHeight;
             tablero.actualizarTablero();
           }
+          break;
           
         }else{
           ataque.direccion="unknown";
         }
-        break;
+        
       default:
         ataque=ataque.inicializar_ataque(ataque);
         ataque=tablero.ataqueAleatorio(tablero,ataque);
         break;
+    }
+    if(ataque.tipoBarco=="Destructor"){
+      tablero.actualizarTablero();
+      tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
+      tablero.resultados.scrollTop = this.resultados.scrollHeight;
+      ataque.hundido++;
+      ataque=ataque.inicializar_ataque(ataque);
+
     }
     
     return ataque;
@@ -480,6 +491,7 @@ class Tablero {
                 tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
                 tablero.resultados.scrollTop = this.resultados.scrollHeight;
                 tablero.actualizarTablero();
+                ataque.hundido++;
                 ataque=ataque.inicializar_ataque(ataque);
               }
               break;
@@ -501,6 +513,7 @@ class Tablero {
                 tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
                 tablero.resultados.scrollTop = this.resultados.scrollHeight;
                 tablero.actualizarTablero();
+                ataque.hundido++;
                 ataque=ataque.inicializar_ataque(ataque);
               }
               break;
@@ -529,6 +542,7 @@ class Tablero {
                 tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
                 tablero.resultados.scrollTop = this.resultados.scrollHeight;
                 tablero.actualizarTablero();
+                ataque.hundido++;
                 ataque=ataque.inicializar_ataque(ataque);
               }
               break;
@@ -550,6 +564,7 @@ class Tablero {
                 tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
                 tablero.resultados.scrollTop = this.resultados.scrollHeight;
                 tablero.actualizarTablero();
+                ataque.hundido++;
                 ataque=ataque.inicializar_ataque(ataque);
               }
               break;
@@ -579,6 +594,7 @@ class Tablero {
                 tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
                 tablero.resultados.scrollTop = this.resultados.scrollHeight;
                 tablero.actualizarTablero();
+                ataque.hundido++;
                 ataque=ataque.inicializar_ataque(ataque);
               }
               break;
@@ -600,6 +616,7 @@ class Tablero {
                 tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
                 tablero.resultados.scrollTop = this.resultados.scrollHeight;
                 tablero.actualizarTablero();
+                ataque.hundido++;
                 ataque=ataque.inicializar_ataque(ataque);
               }
               break;
@@ -628,6 +645,7 @@ class Tablero {
                 tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
                 tablero.resultados.scrollTop = this.resultados.scrollHeight;
                 tablero.actualizarTablero();
+                ataque.hundido++;
                 ataque=ataque.inicializar_ataque(ataque);
               }
               break;
@@ -644,12 +662,14 @@ class Tablero {
               tablero.resultados.value +="\n\n¡Te han atacado a la posición " +posicion8 +" y te han dañado un " +ataque.tipoBarco +"!";
               tablero.resultados.scrollTop = this.resultados.scrollHeight;
               tablero.actualizarTablero();
-              if(ataque.aciertos==5){
+              if(ataque.aciertos==3){
                 console.log("Sumarino destruido");
                 tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
                 tablero.resultados.scrollTop = this.resultados.scrollHeight;
                 tablero.actualizarTablero();
+                ataque.hundido++;
                 ataque=ataque.inicializar_ataque(ataque);
+                ataque=tablero.ataqueAleatorio(tablero,ataque);
               }
               break;
             default:
@@ -664,9 +684,18 @@ class Tablero {
           break;
 
     }
-    return ataque;
+    if (ataque.hundido >= 5) {
+      if (
+        window.confirm("¡HAS PERDIDO! ¿Quieres empezar una nueva partida?")
+      ) {
+        ataque.hundido=0;
+        location.reload();
+      }
+    
 
   }
+  return ataque;
+}
   
   ataqueAleatorio(tablero,ataque){
     
@@ -693,6 +722,7 @@ class Tablero {
         ataque.primerAtaqueExitoso[0]=ataque_X;
         ataque.primerAtaqueExitoso[1]=ataque_Y;
         ataque.aciertos=1;
+        
         ataque.tipoBarco=tablero.casillas[ataque_X][ataque_Y];
         tablero.casillas[ataque_X][ataque_Y] = "barcoDañado";
         let posicion=ataque.primerAtaqueExitoso[0]+"-"+ataque.primerAtaqueExitoso[1];
