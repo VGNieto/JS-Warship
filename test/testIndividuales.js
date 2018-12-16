@@ -335,10 +335,8 @@ function ataque2(tablero, ataque) {
           ataque.aciertos++;
           if (ataque.aciertos == 5) {
             ataque.hundido++;
-            ataque = ataque.inicializar_ataque(ataque);
           }
           break;
-
         case "vertical":
           let contador2 = 0;
           while (tablero[contador2][ataque.ultimoAtaque[1]] != "Portaviones") {
@@ -348,7 +346,6 @@ function ataque2(tablero, ataque) {
           ataque.aciertos++;
           if (ataque.aciertos == 5) {
             ataque.hundido++;
-            ataque = ataque.inicializar_ataque(ataque);
           }
           break;
         default:
@@ -368,10 +365,8 @@ function ataque2(tablero, ataque) {
           ataque.aciertos++;
           if (ataque.aciertos == 4) {
             ataque.hundido++;
-            ataque = ataque.inicializar_ataque(ataque);
           }
           break;
-
         case "vertical":
           let contador4 = 0;
           while (tablero[contador4][ataque.ultimoAtaque[1]] != "Acorazado") {
@@ -381,7 +376,6 @@ function ataque2(tablero, ataque) {
           ataque.aciertos++;
           if (ataque.aciertos == 4) {
             ataque.hundido++;
-            ataque = ataque.inicializar_ataque(ataque);
           }
           break;
         default:
@@ -401,10 +395,8 @@ function ataque2(tablero, ataque) {
           ataque.aciertos++;
           if (ataque.aciertos == 3) {
             ataque.hundido++;
-            ataque = ataque.inicializar_ataque(ataque);
           }
           break;
-
         case "vertical":
           let contador6 = 0;
           while (tablero[contador6][ataque.ultimoAtaque[1]] != "Crucero") {
@@ -414,7 +406,6 @@ function ataque2(tablero, ataque) {
           ataque.aciertos++;
           if (ataque.aciertos == 3) {
             ataque.hundido++;
-            ataque = ataque.inicializar_ataque(ataque);
           }
           break;
         default:
@@ -432,12 +423,11 @@ function ataque2(tablero, ataque) {
           }
           tablero[ataque.ultimoAtaque[0]][contador7] = "barcoDañado";
           ataque.aciertos++;
+
           if (ataque.aciertos == 3) {
             ataque.hundido++;
-            ataque = ataque.inicializar_ataque(ataque);
           }
           break;
-
         case "vertical":
           let contador8 = 0;
           while (tablero[contador8][ataque.ultimoAtaque[1]] != "Submarino") {
@@ -447,7 +437,6 @@ function ataque2(tablero, ataque) {
           ataque.aciertos++;
           if (ataque.aciertos == 3) {
             ataque.hundido++;
-            ataque = ataque.inicializar_ataque(ataque);
           }
           break;
         default:
