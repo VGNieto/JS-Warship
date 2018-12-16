@@ -450,7 +450,8 @@ class Tablero {
         ataque=tablero.ataqueAleatorio(tablero,ataque);
         break;
     }
-    if(ataque.tipoBarco=="Destructor"){
+    if(ataque.tipoBarco=="Destructor"&&ataque.aciertos==2){
+      console.log("se hundio el titanic");
       tablero.actualizarTablero();
       tablero.resultados.value += "\n\n¡Te han destruido el " + ataque.tipoBarco + "!";
       tablero.resultados.scrollTop = this.resultados.scrollHeight;
@@ -663,7 +664,6 @@ class Tablero {
                 tablero.actualizarTablero();
                 ataque.hundido++;
                 ataque=ataque.inicializar_ataque(ataque);
-                ataque=tablero.ataqueAleatorio(tablero,ataque);
               }
               break;
             default:
