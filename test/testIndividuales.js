@@ -102,7 +102,69 @@ function comprobarBarcoHundido(string) {
     }
 }
 
+function colocarBarco(barco) {
+  if (comprobarInsercion(barco) == true) {
+    if (barco.orientacion == "vertical") {
+      for (
+        var i = barco.x, contador = 0;
+        contador < barco.longitud;
+        i++, contador++
+      ) {
+        casillas[i][barco.y] = barco.nom;
+      }
+    } else {
+      //colorcar barco horizontal
+      for (
+        var j = barco.y, contador = 0;
+        contador < barco.longitud;
+        j++, contador++
+      ) {
+        casillas[barco.x][j] = barco.nom;
+      }
+    }
+   
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function ataqueAleatorio(casillas,ataque){
+    
+  var ataque_X= parseInt(Math.random() * 10);
+  var ataque_Y= parseInt(Math.random() * 10);
+    
+  while(casillas[ataque_X][ataque_Y] == "aguaTocada"||casillas[ataque_X][ataque_Y] == "barcoDañado"){
+    ataque_X= parseInt(Math.random() * 10);
+    ataque_Y= parseInt(Math.random() * 10);
+  }
+    
+  if(casillas[ataque_X][ataque_Y]=="agua"){//si me encuentro agua
+      casillas[ataque_X][ataque_Y] = "aguaTocada";
+      ataque.ultimoAtaque[0]=ataque_X;
+      ataque.ultimoAtaque[1]=ataque_Y;
+
+    
+    }else{//si me encuentro un barco
+      ataque.primerAtaqueExitoso[0]=ataque_X;
+      ataque.primerAtaqueExitoso[1]=ataque_Y;
+      ataque.aciertos=1;
+      
+      ataque.tipoBarco=casillas[ataque_X][ataque_Y];
+      casillas[ataque_X][ataque_Y] = "barcoDañado";
+      let posicion=ataque.primerAtaqueExitoso[0]+"-"+ataque.primerAtaqueExitoso[1];
+      ataque.ultimoAtaque[0]=ataque_X;
+      ataque.ultimoAtaque[1]=ataque_Y;
+    }
+  return ataque;
+}
+
+
+
 module.exports.comprobarInsercion = comprobarInsercion;
 module.exports.comprobarBarcoHundido = comprobarBarcoHundido;
+module.exports.colocarBarco = colocarBarco;
+module.exports.ataqueAleatorio = ataqueAleatorio;
+
 
 

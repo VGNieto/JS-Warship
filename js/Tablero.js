@@ -51,6 +51,7 @@ class Tablero {
         this.tablero.appendChild(fila); //Unimos la fila con sus celdas al tablero.
       }
     }
+    
   }
 
   //Agrega en la posición indicada un barco si es posible,recibe como parametro la posición.
@@ -276,13 +277,6 @@ class Tablero {
     }
   }
 
-  comprobarTest(dato) {
-    if (dato === "hola") {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   comprobarInsercion(barco) {
     if (typeof barco == "undefined") {

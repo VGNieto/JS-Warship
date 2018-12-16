@@ -26,3 +26,4 @@ class Ataque{
 
 
 }
+module.exports=Ataque;
