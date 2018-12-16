@@ -167,6 +167,8 @@ class Tablero {
     }
     if (contador == 1) {
       return true;
+    } else{
+      return false;
     }
   }
 
